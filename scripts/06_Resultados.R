@@ -1,6 +1,17 @@
 ###############################################################
 # SCRIPT 6
 # CARACTERIZACIÓN DE LOS CLUSTERS
+#
+# PROPOSITO METODOLOGICO
+# K-Means asigna un número a cada partido, pero un número no dice
+# nada por sí solo: hay que "traducir" cada cluster de vuelta a las
+# variables originales (ideología, tradicionalidad, participación
+# electoral por nivel) para poder nombrarlo e interpretarlo de
+# forma sustantiva (secciones 5.2 y 6.1 del reporte). Este paso es
+# el puente entre el resultado puramente algorítmico del script 4 y
+# la narrativa de política pública: sin esta caracterización,
+# "cluster 1" seguiría siendo una etiqueta vacía en vez de
+# "maquinarias electorales multinivel".
 ###############################################################
 
 rm(list = ls())

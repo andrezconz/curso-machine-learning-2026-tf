@@ -1,6 +1,21 @@
 ###############################################################
 # SCRIPT 7
 # INFERENCIA ESTADÍSTICA DE LOS CLUSTERS
+#
+# PROPOSITO METODOLOGICO
+# El script 6 describe los clusters; este script pregunta si esas
+# diferencias son estadísticamente reales o podrían deberse al
+# azar. Para cada variable original se hace una prueba χ² de
+# independencia contra la asignación de cluster (¿la variable y el
+# cluster están asociados, o son independientes?), se mide el
+# TAMAÑO de esa asociación con la V de Cramér (χ² crece solo con n,
+# no dice si el efecto es grande o pequeño), y se ajustan los
+# p-valores con Benjamini-Hochberg porque se corren 12 pruebas
+# simultáneas (sin ajuste, el riesgo de falsos positivos se
+# acumula). Este último punto fue clave para detectar que la V de
+# Cramér perfecta (1,0) de "tradicional" en la versión original del
+# pipeline era un artefacto de un bug de codificación, no una señal
+# real (ver script 3 y sección 7 del reporte).
 ###############################################################
 
 rm(list = ls())

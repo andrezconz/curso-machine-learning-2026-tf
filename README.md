@@ -68,6 +68,29 @@ apoyo se movieron a una sección de **Anexos** al final del documento.
 └── reporte/                 reporte final (.docx y .md), con las tablas en Anexos
 ```
 
+## Flujo de la metodología empírica
+
+```mermaid
+flowchart TD
+    A["partidos.xlsx<br/>5.143 partidos/movimientos/coaliciones<br/>(Cabra-Ruíz et al., 2023)"] --> B["01-03: Limpieza y codificación dummy<br/>(2 bugs de codificación corregidos)"]
+    B --> C["04: K-Means k=4<br/>Nivel 1 · universo completo<br/>participación electoral binaria"]
+    C --> D["05-07: PCA, t-SNE,<br/>validación χ² / V de Cramér"]
+    D --> E{{"Hallazgo de datos:<br/>58% de las filas son coaliciones,<br/>no partidos individuales"}}
+    E --> F["08-09: Cruce con votos<br/>electorales reales 1958-2023"]
+    F --> G["10-11: K-Means k=3<br/>Nivel 2 · solo partidos no-coalición<br/>votos reales por nivel"]
+    G --> H["12: Evidencia temporal<br/>por periodo de reforma"]
+    G --> I["13: Longevidad organizativa<br/>(prueba independiente)"]
+    D --> J["Reencuadre teórico:<br/>institucionalización, nacionalización, nicho<br/>(Panebianco; Mainwaring & Scully;<br/>Jones & Mainwaring; Meguid)"]
+    H --> K["Reporte de política"]
+    I --> J
+    J --> K
+```
+
+Este diagrama resume la *dirección* de la metodología empírica: no fue un
+plan lineal decidido de antemano, sino una secuencia en la que cada
+hallazgo (el bug de codificación, el descubrimiento de las coaliciones, la
+debilidad de la ideología como marcador) reorientó el siguiente paso.
+
 ## Cómo se construyó este análisis
 
 El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
@@ -176,3 +199,14 @@ errores en el pipeline original (ver sección 7 del reporte):
 
 Curso de Aprendizaje de Máquinas y Políticas Públicas, Bogotá Summer School
 in Economics 2026, Pontificia Universidad Javeriana.
+
+## Reconocimientos
+
+Este repositorio y el reporte que documenta se desarrollaron con el apoyo
+de **Claude (Claude Code, Anthropic)** como asistente de análisis: revisión
+y depuración del pipeline de R, ejecución de los modelos, redacción y
+edición del reporte, y organización de esta documentación. El protocolo
+del curso permite explícitamente el uso de herramientas de inteligencia
+artificial, con la condición de que el autor comprenda y pueda defender
+cada decisión metodológica del trabajo — condición que se verifica en la
+sustentación oral.
