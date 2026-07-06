@@ -7,6 +7,7 @@ Bogotá Summer School in Economics 2026 — Pontificia Universidad Javeriana
 Reporte de política · 6 de julio de 2026
 **Autor: Andrez Felipe Guerrero Torres**
 **Data:** Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez (2023); Torres, Barinas-Forero, Forero-Mesa, Sánchez & Tibavisco (2023). Centro de Estudios sobre Desarrollo Económico (CEDE), Universidad de los Andes.
+*Desarrollado con el apoyo de Claude (Claude Code, Anthropic) como asistente de análisis y redacción.*
 
 > Nota: las tablas de apoyo se presentan en la sección **Anexos**, al final de este documento, para mantener el cuerpo del reporte dentro de las 12 páginas acordadas.
 
