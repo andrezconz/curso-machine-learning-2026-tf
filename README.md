@@ -14,9 +14,9 @@ Sánchez & Tibavisco (2023), *Resultados electorales de Colombia*
 
 ## Pregunta de investigación
 
-¿Qué tipologías empíricas de partidos políticos colombianos emergen del
-análisis conjunto de sus características organizativas, electorales e
-ideológicas, y qué revelan sobre la estructura del sistema de partidos?
+¿Qué tipologías empíricas de partidos y movimientos políticos colombianos,
+entre 1848 y 2023, emergen del análisis conjunto de sus características
+organizativas, electorales e ideológicas?
 
 Los perfiles se nombran e interpretan con un marco teórico que va más allá
 de la ideología: **institucionalización** (Panebianco, 1988; Mainwaring &
@@ -33,9 +33,10 @@ apoyo se movieron a una sección de **Anexos** al final del documento.
 ## Resumen de hallazgos
 
 - **Nivel 1** (K-Means, k=4, sobre las 5.143 organizaciones registradas,
-  participación electoral binaria): solo el **1,8%** (93 partidos) funciona
-  como maquinaria electoral multinivel; el resto opera en un solo nivel o
-  de forma marginal.
+  participación electoral binaria): solo el **1,8%** (93 partidos) está
+  institucionalizado y nacionalizado (participa de forma consistente en
+  varios niveles a la vez); el resto opera en un solo nivel o de forma
+  marginal.
 - **Nivel 2** (K-Means, k=3, sobre 2.155 partidos no-coalición, con votos
   reales 1958–2023): el **4,8%** ("partido institucionalizado", 103
   partidos, entre ellos el Liberal, el Conservador, Cambio Radical, Polo y
@@ -48,10 +49,10 @@ apoyo se movieron a una sección de **Anexos** al final del documento.
   efímeras: el 71% está clasificado como "nacional" y muchas son alianzas
   puntuales Liberal-Conservador para una sola alcaldía.
 - **Longevidad**: los partidos institucionalizados sobreviven en promedio
-  13,3 años (mediana 8) frente a una mediana de 0 años en los partidos
-  vehículo y de nicho — confirmando con una variable independiente del
-  clustering que la institucionalización, no la ideología, es el eje que
-  mejor distingue a los partidos colombianos.
+  13,3 años (mediana 8) frente a una mediana de 0 años en los partidos no
+  institucionalizados y de nicho — confirmando con una variable
+  independiente del clustering que la institucionalización, no la
+  ideología, es el eje que mejor distingue a los partidos colombianos.
 - **Evidencia temporal**: tras las reformas de 2003 y 2011 (pensadas para
   frenar la proliferación de partidos), el número de organizaciones nuevas
   se disparó y la probabilidad de que un partido nuevo llegue a estar
@@ -112,8 +113,8 @@ El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
    robustos, validados con el propio diccionario de la base (que ya usa
    longevidad como una de sus cinco dimensiones oficiales).
 4. **Evidencia temporal** (script 12): comparar clusters por periodo de
-   reforma (1991, 2003, 2011) mostró que la proliferación de vehículos
-   marginales no bajó tras las reformas — se aceleró.
+   reforma (1991, 2003, 2011) mostró que la proliferación de partidos no
+   institucionalizados no bajó tras las reformas — se aceleró.
 5. **Chequeos de robustez** (`scripts/exploratorio/`): Kernel PCA/Spectral
    Clustering y un Naive Bayes sobre el texto del nombre, documentados
    aunque no entraron al reporte principal (el segundo, un resultado
