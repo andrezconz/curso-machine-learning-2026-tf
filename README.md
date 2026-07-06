@@ -14,10 +14,11 @@ Sánchez & Tibavisco (2023), *Resultados electorales de Colombia*
 
 ## Pregunta de investigación
 
-¿Qué perfiles o tipos de partidos y movimientos políticos han existido en
-Colombia entre 1848 y 2022, en términos de su alcance electoral y su
-carácter ideológico, y qué proporción corresponde a vehículos electorales
-marginales frente a maquinarias partidistas consolidadas y multinivel?
+¿Por qué la clasificación ideológica no logra explicar el éxito electoral
+de los partidos colombianos, y qué tipología alternativa —basada en
+institucionalización organizativa y nacionalización electoral— distingue a
+las organizaciones realmente consolidadas de los vehículos electorales
+efímeros?
 
 Los perfiles se nombran e interpretan con un marco teórico que va más allá
 de la ideología: **institucionalización** (Panebianco, 1988; Mainwaring &
@@ -62,12 +63,40 @@ apoyo se movieron a una sección de **Anexos** al final del documento.
 
 ```
 ├── data/                    partidos.xlsx + DATA.md (fuentes y datos no incluidos)
-├── scripts/                 pipeline de R, en orden de ejecucion (01 a 12)
+├── scripts/                 pipeline de R, en orden de ejecucion (01 a 13)
 │   └── exploratorio/        chequeos que NO entraron al reporte final
-├── resultados/              CSVs/RDS generados por los scripts
+├── resultados/              outputs curados (solo lo que se usa en el reporte)
 ├── figuras/                 graficos (PNG) usados en el reporte
-└── reporte/                 reporte final (.docx y .md)
+└── reporte/                 reporte final (.docx y .md), con las tablas en Anexos
 ```
+
+## Cómo se construyó este análisis
+
+El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
+
+1. **Pipeline base** (scripts 01–07): limpieza, codificación dummy, K-Means
+   (k=4) sobre participación electoral binaria, y validación estadística
+   (χ²/V de Cramér). Al auditar este pipeline se encontraron y corrigieron
+   dos errores reales — una codificación dummy asimétrica que duplicaba el
+   peso de una variable, e imputación por moda de códigos centinela que
+   fabricaba señal falsa (detalle en la sección 7 del reporte).
+2. **Segundo nivel con votos reales** (scripts 08–11): al cruzar la base con
+   resultados electorales 1958–2023 se descubrió que el 58% de las filas
+   son coaliciones, no partidos — un hallazgo de datos que reencuadra todo
+   el análisis. El segundo modelo (k=3, solo partidos no-coalición, con
+   votos reales) corrobora el hallazgo del primero con otra fuente.
+3. **Reencuadre teórico** (motivación del reporte, script 13): la ideología
+   resultó ser un marcador débil; se adoptó institucionalización
+   (longevidad), nacionalización (alcance multinivel) y nicho como ejes más
+   robustos, validados con el propio diccionario de la base (que ya usa
+   longevidad como una de sus cinco dimensiones oficiales).
+4. **Evidencia temporal** (script 12): comparar clusters por periodo de
+   reforma (1991, 2003, 2011) mostró que la proliferación de vehículos
+   marginales no bajó tras las reformas — se aceleró.
+5. **Chequeos de robustez** (`scripts/exploratorio/`): Kernel PCA/Spectral
+   Clustering y un Naive Bayes sobre el texto del nombre, documentados
+   aunque no entraron al reporte principal (el segundo, un resultado
+   negativo honesto).
 
 ## Cómo correr el pipeline
 
@@ -112,8 +141,20 @@ electoral de forma confiable).
 
 Los scripts `01`–`07` guardan sus resultados en la raíz del proyecto (tal
 como en el análisis original); los scripts `08` en adelante guardan en
-`resultados/`. Los archivos ya generados están incluidos en `resultados/`
-para quien no quiera correr el pipeline completo.
+`resultados/`.
+
+**`resultados/` está curado, no es un volcado completo**: se excluyeron
+exports crudos a nivel de fila (`coordenadas_pca.csv`,
+`datos_clusterizados.csv`, ~3 archivos, redundantes con las figuras) y 48
+tablas intermedias por-variable de `07_Inferencia_Clusters.R`
+(`Frecuencia_*`, `Porcentaje_*`, `Tabla_*`, `Residuos_*`) que no se citan en
+el reporte — solo se conserva su resumen (`InferenciaClusters.csv`). Todos
+son 100% reproducibles corriendo los scripts; simplemente no aportaban a
+entender los hallazgos, así que no se versionan (ver `.gitignore`).
+
+Los datos electorales para reproducir los scripts 08–13 se descargan de:
+[DataHub Uniandes — Resultados electorales de Colombia](https://datahub.uniandes.edu.co/dataset.xhtml?persistentId=doi%3A10.71590%2FR2KLKI)
+(ver `data/DATA.md` para instrucciones completas).
 
 ### Nota sobre rutas con tildes
 

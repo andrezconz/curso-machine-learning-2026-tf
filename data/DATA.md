@@ -20,7 +20,9 @@
 ## NO incluidos (por tamaño): resultados electorales 1958–2023
 
 Los scripts `08_Cruce_Votos_Electorales.R` en adelante requieren los resultados
-electorales históricos de Colombia (Registraduría Nacional / CEDE) para:
+electorales históricos de Colombia (Torres, Barinas-Forero, Forero-Mesa,
+Sánchez & Tibavisco, 2023, "Resultados electorales de Colombia", Documento
+CEDE-Datos) para:
 
 - Alcaldía, Asamblea Departamental, Concejo Municipal, Gobernación (elecciones territoriales)
 - Cámara de Representantes, Senado (elecciones legislativas)
@@ -29,10 +31,13 @@ electorales históricos de Colombia (Registraduría Nacional / CEDE) para:
 para el periodo 1958–2023 (~130 archivos `.tab`/`.dta`, candidato-municipio-elección,
 ~2,5 GB en total). No se incluyen en este repositorio por su tamaño.
 
-**Para reproducir el análisis de las secciones 5.4, 6.3 y los scripts 08–12:**
+**Descarga oficial:** [DataHub Uniandes — Resultados electorales de Colombia](https://datahub.uniandes.edu.co/dataset.xhtml?persistentId=doi%3A10.71590%2FR2KLKI)
+(DOI: 10.71590/R2KLKI).
 
-1. Descargue los archivos electorales por año y tipo de elección de la fuente
-   CEDE/Registraduría Nacional (mismo origen que `partidos.xlsx`).
+**Para reproducir el análisis de las secciones 5.4, 6.3 y los scripts 08–13:**
+
+1. Descargue los archivos electorales por año y tipo de elección del DataHub
+   enlazado arriba.
 2. Colóquelos en esta carpeta (`data/`) con el patrón de nombre
    `AAAA_tipo_de_eleccion.tab` (o `.dta` para alcaldías), por ejemplo:
    `2022_senado.tab`, `2019_alcaldia.dta`, `2018_camara.tab`.

@@ -13,3 +13,11 @@ Rplots.pdf
 .DS_Store
 
 ~$*
+
+# Outputs reproducibles pero no versionados (ver README > "Que no se sube")
+resultados/coordenadas_pca.csv
+resultados/datos_clusterizados.csv
+resultados/inferencia_clusters/Frecuencia_*.csv
+resultados/inferencia_clusters/Porcentaje_*.csv
+resultados/inferencia_clusters/Tabla_*.csv
+resultados/inferencia_clusters/Residuos_*.csv
