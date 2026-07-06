@@ -1,6 +1,21 @@
 ###############################################################
 # SCRIPT 4
 # K-MEANS
+#
+# PROPOSITO METODOLOGICO
+# Ajusta el modelo de clustering que responde la pregunta central
+# del reporte: k=4 (justificado en el script 4.1 por interpretabilidad,
+# no por optimizar ciegamente silhouette/CH), nstart=100 (100
+# inicializaciones aleatorias para reducir el riesgo de quedar
+# atrapado en un óptimo local pobre) y semilla fija (20260706) para
+# reproducibilidad. Con nstart=100, K-Means converge de forma muy
+# estable a la misma partición sustantiva sin importar la semilla
+# exacta -- lo único que puede cambiar es qué número (1,2,3,4) le
+# toca a cada grupo, no su composición (ver README, sección "Cómo
+# correr el pipeline"). Este es el modelo del "nivel 1": usa el
+# universo completo de 5.143 partidos y participación electoral
+# binaria; el "nivel 2" (scripts 10-11) lo valida de forma
+# independiente con votos reales sobre solo los partidos genuinos.
 ###############################################################
 
 library(tidyverse)

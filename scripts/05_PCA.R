@@ -1,6 +1,18 @@
 ###############################################################
 # SCRIPT 5
 # ANALISIS DE COMPONENTES PRINCIPALES
+#
+# PROPOSITO METODOLOGICO
+# El PCA aquí es puramente ilustrativo: sirve para VISUALIZAR en 2D
+# los 4 clusters que ya se calcularon en el espacio original de
+# ~25-30 variables dummy (script 4), no para reducir dimensiones
+# antes de agrupar. Es una distinción importante: si el PCA se
+# usara antes del clustering, se estaría agrupando sobre una
+# versión resumida (con pérdida de información) de los datos, no
+# sobre las variables originales. Las cargas (loadings) también
+# ayudan a interpretar qué variables definen cada eje del gráfico.
+# Complementado en el script 5.1 con t-SNE, una proyección no
+# lineal que preserva mejor la vecindad local que esta PCA lineal.
 ###############################################################
 
 rm(list = ls())

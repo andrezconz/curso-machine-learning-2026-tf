@@ -1,6 +1,25 @@
 ###############################################################
 # SCRIPT 4.1
 # SELECCION DEL NUMERO OPTIMO DE CLUSTERS
+#
+# PROPOSITO METODOLOGICO
+# K-Means exige fijar k de antemano, así que hay que justificarlo
+# con evidencia, no elegirlo a ojo. Se calculan tres criterios
+# complementarios porque ninguno es suficiente por sí solo:
+#   - WSS / método del codo: heterogeneidad intra-cluster; baja
+#     siempre con k, hay que buscar el punto de rendimientos
+#     decrecientes ("el codo"), no el mínimo absoluto.
+#   - Silhouette: qué tan bien encaja cada punto en su cluster
+#     frente a los demás (rango -1 a 1); tiende a subir con k en
+#     datos categóricos de alta dimensionalidad, por lo que no basta
+#     con maximizarlo.
+#   - Calinski-Harabasz: razón entre dispersión ENTRE clusters y
+#     dispersión DENTRO de clusters; favorece soluciones simples.
+# El curso solo exige el método del codo; usar los tres es un nivel
+# de rigor adicional, y su desacuerdo (silhouette prefiere k alto,
+# CH prefiere k=2) es precisamente el motivo por el que el script 4
+# elige k a partir de un balance con la interpretabilidad
+# sustantiva, no del óptimo puramente estadístico.
 ###############################################################
 
 library(tidyverse)
