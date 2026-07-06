@@ -32,7 +32,7 @@ Es una pregunta de naturaleza descriptiva/exploratoria: no se busca predecir una
 
 La forma más habitual de describir a un partido colombiano es por su etiqueta ideológica (izquierda, derecha, centro). Pero los propios datos de este reporte muestran que esa etiqueta es un marcador débil e inconsistente: cerca del 40% de los partidos históricos no tiene ideología clasificable, y —de forma casi paradójica (sección 5.4)— los partidos electoralmente más exitosos son también los que con mayor frecuencia carecen de clasificación ideológica. Ideología, entonces, no es el eje más útil para tipificar a un partido colombiano.
 
-La literatura sobre sistemas de partidos ofrece dimensiones teóricas más robustas y, sobre todo, más observables en los datos disponibles. Panebianco (1988) y Mainwaring y Scully (1995) definen la institucionalización partidista como la capacidad de una organización de sobrevivir y reproducirse en el tiempo más allá de sus fundadores, en oposición a partidos personalistas construidos alrededor de un líder o una elección puntual; empíricamente, esa capacidad se aproxima con la longevidad organizativa. Jones y Mainwaring (2003) proponen la nacionalización electoral —la competencia sostenida de un partido en múltiples niveles y territorios, no solo en uno— como el complemento natural de la institucionalización. Y Meguid (2005) caracteriza a los partidos de nicho como aquellos que compiten sobre una dimensión estrecha y no económica (étnica, religiosa, sectorial) en vez de la disputa ideológica izquierda-derecha convencional. Estas tres nociones —institucionalización (longevidad), nacionalización (alcance multinivel) y nicho— son las que se usan en este reporte para nombrar e interpretar los perfiles encontrados, en lugar de depender de la clasificación ideológica registrada en la base.
+La literatura sobre sistemas de partidos ofrece dimensiones teóricas más robustas y, sobre todo, más observables en los datos disponibles. Panebianco (1988) y Mainwaring y Scully (1995) definen la institucionalización partidista como la capacidad de una organización de sobrevivir y reproducirse en el tiempo más allá de sus fundadores, en oposición a partidos personalistas construidos alrededor de un líder o una elección puntual; empíricamente, esa capacidad se aproxima con la longevidad organizativa. Jones y Mainwaring (2003) proponen la nacionalización electoral —la competencia sostenida de un partido en múltiples niveles y territorios, no solo en uno— como el complemento natural de la institucionalización. Y Meguid (2005) caracteriza a los partidos de nicho como aquellos que compiten sobre una dimensión estrecha y no económica (étnica, religiosa, sectorial) en vez de la disputa ideológica izquierda-derecha convencional. Estas tres nociones —institucionalización (longevidad), nacionalización (alcance multinivel) y nicho— son las que se usan en este reporte para nombrar e interpretar los perfiles encontrados, en lugar de depender de la clasificación ideológica registrada en la base. Esta elección no es solo una lectura externa: los propios autores de la base de datos (Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez, 2023) clasifican a los partidos colombianos en cinco dimensiones —ideología, grupos identitarios representados, tradicionalidad, grado de nacionalización y longevidad—, es decir, la longevidad organizativa ya es, por diseño, una de las dimensiones centrales de esta base, no un añadido de este reporte.
 
 Esta relectura no es solo académica: el debate sobre la proliferación de partidos y movimientos políticos —popularmente conocidos como "partidos de garaje" o "microempresas electorales"— ha sido central en las reformas al régimen de partidos en Colombia (Acto Legislativo 01 de 2003, Ley 1475 de 2011 y las discusiones de reforma política de 2023–2025). La preocupación de fondo es que un número elevado de organizaciones obtienen o mantienen personería jurídica sin construir una presencia electoral real ni una organización duradera, lo que fragmenta la representación, dificulta la rendición de cuentas y encarece la administración electoral (tarjetones, financiación estatal, curules). Si la ideología no distingue bien a estos partidos, la institucionalización y la nacionalización sí podrían hacerlo, y de forma más directamente accionable para el diseño de reglas (umbrales, financiación).
 
@@ -54,7 +54,7 @@ Una vez obtenidos los grupos, se validó su significancia estadística mediante 
 
 ## 4. Datos
 
-La base proviene del CEDE (Centro de Estudios sobre Desarrollo Económico), Universidad de los Andes, y contiene la clasificación histórica de partidos y movimientos políticos colombianos. La unidad de observación es el partido/movimiento político (identificado por un código que combina el año de fundación y un consecutivo). El periodo cubierto va de 1848 a 2022 y el archivo original contiene 5.143 observaciones y 27 variables.
+La base —"Una caracterización histórica de los partidos políticos de Colombia: 1958–2022" (Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez, 2023, Documento CEDE-Datos, Universidad de los Andes)— clasifica todos los partidos, movimientos y coaliciones que compitieron en elecciones de concejo, alcaldía, asamblea, gobernación, cámara, senado y presidencia con registro entre 1958 y 2022. La unidad de observación es el partido/movimiento/coalición (identificado por un código que combina el año de fundación y un consecutivo); el campo temporalidad, que marca su primera y última aparición en registros oficiales, se remonta hasta 1848 para las organizaciones más antiguas (p. ej. el Partido Liberal). El archivo original contiene 5.143 observaciones y 27 variables (25 documentadas en el diccionario oficial, más 2 adicionales de participación en primera y segunda vuelta presidencial).
 
 ### 4.1 Variables utilizadas
 
@@ -62,17 +62,53 @@ La base proviene del CEDE (Centro de Estudios sobre Desarrollo Económico), Univ
 |---|---|---|
 | tradicional | Indicador de partido tradicional (Liberal/Conservador y afines históricos) | Binaria |
 | gradonac | Grado de nacionalización del partido (0/1; 99 = sin clasificar) | Categórica |
-| ideologia | Clasificación ideológica a partir de estatutos (izquierda/derecha/otra/no clasificado) | Categórica |
-| grupo_representativo_1/2 | Grupo poblacional o sectorial representado (p. ej. étnico); 98/99 = no aplica / sin clasificar | Categórica |
+| ideologia | 1 = Izquierda; 2 = Derecha; 3 = Ni derecha ni izquierda; 4 = Información insuficiente para clasificar | Categórica |
+| grupo_representativo_1/2 | Grupo identitario representado (afrocolombianos, indígenas, católicos/cristianos, ex-militantes, campesinos, mujeres, víctimas del conflicto); 98 = no representa un grupo identitario; 99 = no se tiene información | Categórica |
 | part_alcaldia ... part_senado | Participación (0/1) en elecciones de alcaldía, asamblea, cámara, concejo, gobernación, presidencia (1ª y 2ª vuelta) y senado | Binarias (9 variables) |
 
 ### 4.2 Calidad y tratamiento de los datos
 
 El análisis exploratorio inicial mostró que las variables de texto libre (justificaciones y fuentes de clasificación) tienen alta proporción de valores faltantes genuinos (entre 73% y 100%), lo cual es esperable porque solo se documentan cuando existe una fuente primaria disponible; estas variables no se usaron en el modelo.
 
-Más relevante para la metodología: las variables gradonac, grupo_representativo_1 y grupo_representativo_2 no presentan valores faltantes de tipo NA, sino códigos centinela 98 ("no aplica") y 99 ("sin clasificar") que cubren, respectivamente, el 11,3%, el 88,6% y el 98,6% de los partidos. En una primera versión del pipeline estos códigos se recodificaban a NA y se imputaban con la moda de las categorías válidas restantes; se detectó durante la revisión de este trabajo que ese procedimiento fabricaba una variable casi constante (hasta 89% de los partidos forzados a una sola categoría) que, tras estandarizar, dominaba artificialmente la distancia euclídea de K-Means. Se corrigió tratando 98 y 99 como categorías propias, preservando la información real de que la mayoría de partidos simplemente no tiene un grupo representativo definido, sin fabricar una moda ficticia.
+Más relevante para la metodología: según el diccionario oficial de la base (Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez, 2023), gradonac usa 99 para "no se puede clasificar", y grupo_representativo_1/2 usan dos códigos con significados distintos: 98 ("el partido no representa un grupo identitario" —una respuesta sustantiva válida, no un dato faltante—) y 99 ("no se tiene información" —faltante genuino—). Estos códigos cubren, respectivamente, el 11,3% (gradonac=99), el 88,6% (grupo_representativo_1: 98+99) y el 98,6% (grupo_representativo_2: 98+99) de los partidos. En una primera versión del pipeline estos códigos se recodificaban a NA (sin distinguir 98 de 99) y se imputaban con la moda de las categorías válidas restantes; se detectó durante la revisión de este trabajo que ese procedimiento fabricaba una variable casi constante (hasta 89% de los partidos forzados a una sola categoría) que, tras estandarizar, dominaba artificialmente la distancia euclídea de K-Means. Se corrigió tratando 98 y 99 como categorías propias y distintas entre sí, preservando tanto la información real de que la mayoría de partidos no representa un grupo identitario (98) como la de que en muchos casos simplemente no hay información disponible (99), sin fabricar una moda ficticia.
 
 Todas las variables categóricas se transformaron a variables dummy mediante una matriz de diseño con intercepto que luego se descarta (evitando así que la primera variable del conjunto reciba, por un efecto conocido de R, una codificación de rango completo mientras las demás reciben codificación de referencia —otro problema detectado y corregido en este trabajo, ver sección 7). Las columnas resultantes con varianza cero se eliminaron y el conjunto final (25–30 variables dummy, según la especificación) se estandarizó (media 0, desviación 1).
+
+### 4.3 Estadísticas descriptivas
+
+Distribución de las variables categóricas usadas en el modelo, sobre el universo completo (n=5.143):
+
+| Variable | Categoría | n | % |
+|---|---|---|---|
+| tradicional | 0 — No tradicional | 4,838 | 94.1% |
+| tradicional | 1 — Tradicional | 305 | 5.9% |
+| gradonac | 0 — No nacional | 2,428 | 47.2% |
+| gradonac | 1 — Nacional | 2,134 | 41.5% |
+| gradonac | 99 — No se puede clasificar | 581 | 11.3% |
+| ideologia | 1 — Izquierda | 414 | 8.0% |
+| ideologia | 2 — Derecha | 414 | 8.0% |
+| ideologia | 3 — Ni derecha ni izquierda | 2,237 | 43.5% |
+| ideologia | 4 — Información insuficiente | 2,078 | 40.4% |
+| grupo_representativo_1 | 1–7 (afro, indígena, cristiano, ex-militante, campesino, mujer, víctima) | 587 | 11.4% |
+| grupo_representativo_1 | 98 — No representa grupo identitario | 979 | 19.0% |
+| grupo_representativo_1 | 99 — No se tiene información | 3,577 | 69.6% |
+| grupo_representativo_2 | 1–6 (mismas categorías, sin víctimas) | 72 | 1.4% |
+| grupo_representativo_2 | 98 — No representa grupo identitario | 3,056 | 59.4% |
+| grupo_representativo_2 | 99 — No se tiene información | 2,015 | 39.2% |
+
+Participación electoral por nivel, sobre el universo completo (n=5.143; cada partido puede participar en más de un nivel):
+
+| Nivel | n participa | % participa |
+|---|---|---|
+| Alcaldía | 2,844 | 55.3% |
+| Concejo | 1,364 | 26.5% |
+| Cámara | 773 | 15.0% |
+| Asamblea | 444 | 8.6% |
+| Gobernación | 274 | 5.3% |
+| Senado | 227 | 4.4% |
+| Presidencia | 63 | 1.2% |
+
+La participación cae drásticamente a medida que sube el nivel de gobierno —de 55,3% en alcaldías a apenas 1,2% en presidencia—, un primer indicio, ya visible antes del clustering, de que la gran mayoría de los partidos colombianos opera exclusivamente en el ámbito local.
 
 ## 5. Implementación de la metodología
 
@@ -141,9 +177,23 @@ Es relevante notar que, tras corregir el error de codificación dummy descrito e
 
 Los indicadores part_* usados hasta ahora son binarios (participó o no participó), sin capturar la magnitud del respaldo electoral. Para profundizar, se incorporaron los resultados electorales históricos de la Registraduría/CEDE (1958–2023) para alcaldía, asamblea, cámara, concejo, gobernación, presidencia (ambas vueltas) y senado, a nivel de candidato-municipio-elección.
 
-Al cruzar estos resultados con partidos.xlsx por nombre se descubrió un hecho relevante para caracterizar la base completa: el 58% de las 5.143 organizaciones registradas (2.988 filas) corresponden a coaliciones ad hoc de alcance municipal o departamental (por ejemplo, "COALICION CONCEJO DE X.PARTIDO Y Y PARTIDO Z"), no a partidos propiamente dichos. Este hallazgo refuerza, desde otro ángulo, el diagnóstico de la sección 6: buena parte del universo de "partidos" colombianos son en realidad alianzas de un solo uso.
+Al cruzar estos resultados con partidos.xlsx por nombre se descubrió un hecho relevante para caracterizar la base completa: el 58% de las 5.143 organizaciones registradas (2.988 filas) corresponden a coaliciones (variable coalicion=1 del diccionario oficial), la mayoría de alcance municipal o departamental (por ejemplo, "COALICION CONCEJO DE X.PARTIDO Y Y PARTIDO Z"), no a partidos propiamente dichos. Es importante matizar esta cifra: no todas son alianzas efímeras entre movimientos desconocidos —el 71% de las coaliciones está clasificado como gradonac=1 ("nacional"), y muchas corresponden a alianzas puntuales entre el Partido Liberal y el Partido Conservador para una sola alcaldía, no a vehículos de partidos marginales—. Aun así, el hallazgo refuerza, desde otro ángulo, el diagnóstico de la sección 6: buena parte del universo de "partidos" colombianos son en realidad alianzas de un solo uso, con o sin partidos tradicionales de por medio.
 
 Dado que no es posible atribuir de forma no arbitraria los votos de una coalición a un partido individual, estas filas se excluyeron del ejercicio de votos, dejando un universo de 2.155 partidos no-coalición. El emparejamiento de nombres (partido en el archivo electoral vs. partidos.xlsx) usó normalización ligera —mayúsculas, sin tildes, sin puntuación, y eliminando palabras genéricas como "PARTIDO", "MOVIMIENTO", "COLOMBIANO", "POLÍTICO", "NACIONAL"— logrando emparejar el 80,6% de los votos históricos no-coalición (1.636 de 2.119 partidos no-coalición con al menos un registro de votos). El 19,4% restante corresponde sobre todo a variantes con eslóganes propios (p. ej. "PARTIDO CENTRO DEMOCRATICO - MANO FIRME CORAZON GRANDE") que una normalización ligera no puede resolver sin riesgo de falsos positivos.
+
+Estadística descriptiva de los votos históricos (1958–2023) emparejados, por nivel electoral:
+
+| Nivel | Partidos con votos | Votos totales | Promedio | Mediana | Máximo |
+|---|---|---|---|---|---|
+| Concejo | 618 | 141,520,199 | 228,997 | 2,678 | 50,204,571 |
+| Asamblea | 141 | 139,802,861 | 991,510 | 59,738 | 61,833,083 |
+| Cámara | 460 | 109,568,676 | 238,193 | 4,620 | 47,622,263 |
+| Senado | 171 | 102,928,017 | 601,918 | 37,287 | 43,675,547 |
+| Alcaldía | 808 | 99,644,219 | 123,322 | 3,249 | 27,318,479 |
+| Presidencia | 64 | 93,826,350 | 1,466,037 | 29,177 | 41,705,550 |
+| Gobernación | 145 | 59,680,036 | 411,586 | 90,477 | 22,171,005 |
+
+La enorme brecha entre el promedio y la mediana en todos los niveles (p. ej. en cámara, promedio de 238.193 votos frente a una mediana de apenas 4.620) confirma el fuerte sesgo a la derecha que motivó la transformación log(1+votos): unos pocos partidos concentran la mayoría de los votos históricos, mientras la mayoría de los partidos con algún registro apenas reciben unos cuantos miles de votos en toda su historia.
 
 Para cada uno de los 2.155 partidos no-coalición se sumaron los votos históricos por nivel electoral (transformados con log(1+votos) por su fuerte sesgo a la derecha) y se combinaron, con la misma codificación dummy consistente de la sección 4.2, con las variables categóricas originales (ideología, tradicional, gradonac, grupo representativo). El criterio de selección de k favoreció con claridad valores bajos (silhouette = 0,542 en k=2 y 0,528 en k=3, frente a 0,27–0,48 para k≥4); se eligió k=3 en vez de k=2 porque separa un tercer grupo —una élite partidista minoritaria— que k=2 fusiona con el grupo intermedio, y esa distinción es la más relevante para el reporte de política.
 
@@ -189,9 +239,9 @@ El contraste es contundente: la mitad de los partidos vehículo y de nicho desap
 
 El modelo identifica cuatro perfiles de partidos y movimientos políticos, con implicaciones muy distintas para la regulación del sistema de partidos:
 
-- **Cluster 1 — "Partidos locales con identidad ideológica"** (37.6%, n=1.931): prácticamente el 100% tiene una ideología clasificada (77.6% en la categoría intermedia, 18.7% de derecha), 15.2% son tradicionales, y su participación electoral se concentra casi exclusivamente en alcaldías (73.6%), con presencia nula en presidencia y mínima en senado (0.6%).
+- **Cluster 1 — "Partidos locales con identidad ideológica"** (37.6%, n=1.931): prácticamente el 100% tiene una ideología clasificada (77.6% en la categoría "ni derecha ni izquierda", 18.7% de derecha), 15.2% son tradicionales, y su participación electoral se concentra casi exclusivamente en alcaldías (73.6%), con presencia nula en presidencia y mínima en senado (0.6%).
 - **Cluster 2 — "Vehículos sin identidad programática"** (39.4%, n=2.024): el grupo más grande. El 99.6% no tiene ideología clasificable, casi ninguno es tradicional (0.4%) y su participación electoral, aunque presente en varios niveles (26.2% cámara, 33.3% concejo), es dispersa y sin un patrón de consolidación claro.
-- **Cluster 3 — "Partidos ideológicos de espectro amplio"** (21.3%, n=1.095): totalmente clasificados ideológicamente (30.0% izquierda, 65.8% categoría intermedia), con alcance local moderado (56.4% en alcaldía) y participación marginal en cargos nacionales.
+- **Cluster 3 — "Partidos ideológicos de espectro amplio"** (21.3%, n=1.095): totalmente clasificados ideológicamente (30.0% izquierda, 65.8% "ni derecha ni izquierda"), con alcance local moderado (56.4% en alcaldía) y participación marginal en cargos nacionales.
 - **Cluster 4 — "Maquinarias electorales multinivel"** (1.8%, n=93): el grupo más pequeño y el más determinante. Participa en todos los niveles muy por encima del promedio — 67.7% en presidencia, 50.5% en senado, 55.9% en cámara, 50.5% en asamblea, 48.4% en concejo y 32.3% en gobernación—, pero, paradójicamente, el 66.7% de estos partidos no tiene una ideología clasificable. Es decir, los partidos con mayor éxito y alcance electoral multinivel tienden a ser los menos programáticos, consistente con el diagnóstico de un sistema de partidos más personalista/clientélico que doctrinario.
 
 El hallazgo central para política pública es cuantitativo: de las 5.143 organizaciones políticas registradas históricamente en Colombia, solo 93 (1.8%) funcionan como maquinarias electorales multinivel; el 98.2% restante opera en un solo nivel de gobierno o de forma marginal. El análisis de segundo nivel (sección 5.4), que usa votos reales en vez de participación binaria y excluye las coaliciones ad hoc, corrobora este patrón con otra fuente de datos: solo el 4,8% de los partidos genuinos (no-coalición) —el cluster "Partido institucionalizado", que incluye al Liberal, Conservador, Cambio Radical, Polo y Alianza Verde— concentra el grueso del respaldo electoral real, mientras el 86% son vehículos con votación marginal.
@@ -229,7 +279,7 @@ Esto sugiere que los umbrales basados en votación de una sola elección no han 
 Durante la revisión de este trabajo se identificaron y corrigieron dos errores en el pipeline original que vale la pena documentar por transparencia:
 
 - **Codificación dummy asimétrica**: la matriz de diseño inicial (`model.matrix(~.-1, ...)`) asignaba, por un comportamiento conocido de R al eliminar el intercepto, codificación de rango completo (ambos niveles como dummies) a la primera variable del conjunto (tradicional) y codificación estándar (nivel de referencia omitido) a las demás, duplicando su peso en la distancia euclídea. Se corrigió generando la matriz con intercepto y eliminándolo después, lo que produce codificación consistente para todas las variables.
-- **Imputación por moda de códigos centinela**: como se describe en la sección 4.2, los códigos 98/99 (que cubren hasta el 98.6% de los casos en algunas variables) se recodificaban a NA y se imputaban con la moda, fabricando variables casi constantes que distorsionaban la distancia entre observaciones. Se corrigió tratando estos códigos como categorías legítimas.
+- **Imputación por moda de códigos centinela**: como se describe en la sección 4.2, los códigos 98 ("no representa un grupo identitario") y 99 ("no se tiene información", o "no se puede clasificar" en gradonac) —que cubren hasta el 98.6% de los casos en algunas variables— se recodificaban a NA sin distinguirlos entre sí, y se imputaban con la moda, fabricando variables casi constantes que distorsionaban la distancia entre observaciones. Se corrigió tratando estos códigos como categorías legítimas y diferenciadas.
 
 Ambas correcciones cambiaron de forma material los resultados (por ejemplo, la V de Cramér de tradicional pasó de 1,0 a 0,305), lo que subraya la importancia de auditar cuidadosamente el preprocesamiento en cualquier ejercicio de clustering sobre variables categóricas codificadas como dummies.
 
@@ -247,9 +297,10 @@ Ambas correcciones cambiaron de forma material los resultados (por ejemplo, la V
 
 ## Referencias
 
+- Cabra-Ruíz, N., Torres, S., Wills-Otero, L., & Castilla-Gutiérrez, V. (2023). Una caracterización histórica de los partidos políticos de Colombia: 1958–2022 (Documento CEDE-Datos). Centro de Estudios sobre Desarrollo Económico, Universidad de los Andes.
 - Jones, M. P., & Mainwaring, S. (2003). The nationalization of parties and party systems: An empirical measure and an application to the Americas. *Party Politics*, 9(2), 139–166.
 - Mainwaring, S., & Scully, T. R. (Eds.). (1995). *Building Democratic Institutions: Party Systems in Latin America*. Stanford University Press.
 - Meguid, B. M. (2005). Competition between unequals: The role of mainstream party strategy in niche party success. *American Political Science Review*, 99(3), 347–359.
 - Panebianco, A. (1988). *Political Parties: Organization and Power*. Cambridge University Press.
 - Pizarro Leongómez, E. (2006). Giants with feet of clay: political parties in Colombia. In *Party Politics in the Andes*. Rowman & Littlefield.
-- CEDE, Universidad de los Andes. Clasificación de partidos y movimientos políticos colombianos (1848–2022); Registraduría Nacional del Estado Civil / CEDE, resultados electorales históricos (1958–2023).
+- Torres, S., Barinas-Forero, A., Forero-Mesa, W., Sánchez, J. E., & Tibavisco, M. (2023). Resultados electorales de Colombia (Documento CEDE-Datos). Centro de Estudios sobre Desarrollo Económico, Universidad de los Andes.

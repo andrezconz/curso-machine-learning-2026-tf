@@ -21,7 +21,7 @@ datos_ml <- readRDS("resultados/datos_ml.rds")
 modelo_kmeans <- readRDS("resultados/modelo_kmeans.rds")
 X <- as.matrix(datos_ml)
 
-set.seed(2025)
+set.seed(20260706)
 
 cat("========================================\n")
 cat("1. KERNEL PCA (RBF)\n")

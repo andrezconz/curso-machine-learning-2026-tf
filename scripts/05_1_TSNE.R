@@ -25,7 +25,7 @@ modelo_kmeans <- readRDS("resultados/modelo_kmeans.rds")
 
 X <- as.matrix(datos_ml)
 
-set.seed(2025)
+set.seed(20260706)
 tsne <- Rtsne(X, dims = 2, perplexity = 30, check_duplicates = FALSE,
               pca = FALSE, theta = 0.5, max_iter = 1000, verbose = FALSE)
 

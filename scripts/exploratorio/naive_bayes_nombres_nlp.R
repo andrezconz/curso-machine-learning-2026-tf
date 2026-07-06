@@ -23,7 +23,7 @@ suppressPackageStartupMessages({
   library(stringi)
 })
 
-set.seed(2025)
+set.seed(20260706)
 
 ###############################################################
 # 1. CARGAR

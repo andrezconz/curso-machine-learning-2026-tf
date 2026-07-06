@@ -3,10 +3,17 @@
 ## Incluidos en este repositorio
 
 - **`partidos.xlsx`** — Clasificación de partidos y movimientos políticos colombianos.
-  Fuente: CEDE, Universidad de los Andes. 5.143 filas, 27 variables, periodo 1848–2022.
-  Unidad de observación: partido/movimiento político (incluye ~2.988 filas que en
-  realidad son coaliciones ad hoc de alcance municipal/departamental, ver sección
-  4.2 y 5.4 del reporte).
+  Fuente: Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez (2023), "Una
+  caracterización histórica de los partidos políticos de Colombia: 1958–2022"
+  (Documento CEDE-Datos, Universidad de los Andes). 5.143 filas, 27 variables
+  (25 documentadas en el diccionario oficial + 2 adicionales de primera/segunda
+  vuelta presidencial). Unidad de observación: partido/movimiento/coalición
+  (incluye ~2.988 filas con coalicion=1, la mayoría alianzas de alcance
+  municipal/departamental, ver sección 4.2 y 5.4 del reporte).
+- **`Diccionario_Partidos_Politicos_Colombia.pdf`** — Diccionario oficial de
+  variables de la base anterior (Cabra-Ruíz et al., 2023, v1.0, noviembre de
+  2023): describe las 25 variables documentadas, sus categorías exactas y las
+  fuentes usadas para construirlas.
 - **`clasificacion_partidos_v1.txt`** — Misma base en formato texto delimitado por
   tabulaciones (usada solo como referencia; los scripts leen `partidos.xlsx`).
 

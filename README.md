@@ -35,7 +35,10 @@ Ver el reporte completo en [`reporte/Reporte_Final_Partidos_Politicos.docx`](rep
   corroborando el hallazgo del nivel 1 con
   otra fuente de datos.
 - **Descubrimiento de datos**: el 58% de las 5.143 filas de `partidos.xlsx`
-  no son partidos, sino coaliciones ad hoc de alcance local.
+  no son partidos individuales, sino coaliciones (`coalicion=1`), la mayoría
+  de alcance municipal/departamental — aunque no todas son alianzas
+  efímeras: el 71% está clasificado como "nacional" y muchas son alianzas
+  puntuales Liberal-Conservador para una sola alcaldía.
 - **Longevidad**: los partidos institucionalizados sobreviven en promedio
   13,3 años (mediana 8) frente a una mediana de 0 años en los partidos
   vehículo y de nicho — confirmando con una variable independiente del
@@ -78,6 +81,7 @@ Ejecutar desde la raíz del repositorio, en orden:
 | `06_Resultados.R` | Caracterización de los 4 clusters |
 | `07_Inferencia_Clusters.R` | χ², V de Cramér por variable |
 | `08_Cruce_Votos_Electorales.R` | Cruce con votos reales 1958–2023 (requiere datos no incluidos, ver `data/DATA.md`) |
+| `08_1_Estadisticas_Descriptivas.R` | Tablas descriptivas de partidos.xlsx y de los votos históricos (secciones 4.3 y 5.4) |
 | `09_Segundo_Nivel_Preparacion.R` | Prepara datos del segundo nivel (partidos no-coalición + votos) |
 | `10_Segundo_Nivel_Seleccion_K.R` | Selección de k para el segundo nivel |
 | `11_Segundo_Nivel_Modelo.R` | Modelo final del segundo nivel (k=3) |

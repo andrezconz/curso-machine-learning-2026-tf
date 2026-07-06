@@ -13,7 +13,7 @@ suppressPackageStartupMessages({
 })
 
 datos_ml2 <- readRDS("resultados/datos_ml2.rds")
-set.seed(2025)
+set.seed(20260706)
 
 k_max <- 10
 wss <- numeric(k_max); sil <- numeric(k_max); ch <- numeric(k_max)
