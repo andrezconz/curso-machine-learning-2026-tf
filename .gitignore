@@ -1,0 +1,13 @@
+# Datos electorales pesados (ver data/DATA.md) — no se versionan
+data/*.tab
+data/*.dta
+data/*.download/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+Rplots.pdf
+
+# Sistema
+.DS_Store
