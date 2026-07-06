@@ -72,26 +72,69 @@ del reporte.
 
 ## Flujo de la metodología empírica
 
+Cada nodo indica el o los scripts (`scripts/`) que lo producen, para que el
+diagrama funcione también como mapa de navegación del repositorio.
+
 ```mermaid
 flowchart TD
-    A["partidos.xlsx<br/>5.143 partidos/movimientos/coaliciones<br/>(Cabra-Ruíz et al., 2023)"] --> B["01-03: Limpieza y codificación dummy<br/>(2 bugs de codificación corregidos)"]
-    B --> C["04: K-Means k=4<br/>Nivel 1 · universo completo<br/>participación electoral binaria"]
-    C --> D["05-07: PCA, t-SNE,<br/>validación χ² / V de Cramér<br/>+ ranking RF/árbol (07_1)"]
-    D --> E{{"Hallazgo de datos:<br/>58% de las filas son coaliciones,<br/>no partidos individuales"}}
-    E --> F["08-09: Cruce con votos<br/>electorales reales 1958-2023"]
-    F --> G["10-11: K-Means k=3<br/>Nivel 2 · solo partidos no-coalición<br/>votos reales por nivel"]
-    G --> H["12: Evidencia temporal<br/>por periodo de reforma"]
-    G --> I["13: Longevidad organizativa<br/>(prueba independiente)"]
-    D --> J["Reencuadre teórico:<br/>institucionalización, nacionalización, nicho<br/>(Panebianco; Mainwaring & Scully;<br/>Jones & Mainwaring; Meguid)"]
-    H --> K["Reporte de política"]
-    I --> J
-    J --> K
+    DATA(["data/partidos.xlsx<br/>5.143 partidos/movimientos/coaliciones<br/>(Cabra-Ruíz et al., 2023)"])
+
+    subgraph N1["NIVEL 1 · universo completo, participación electoral binaria"]
+        direction TB
+        S123["01_configuracion.R<br/>02_EDA.R<br/>03_Procesamiento.R<br/><i>limpieza, códigos centinela,<br/>codificación dummy</i>"]
+        S41K["04_1_Seleccion_K.R<br/><i>codo / silhouette / CH → k=4</i>"]
+        S4["04_KMeans.R<br/><i>modelo K-Means, k=4</i>"]
+        S5["05_PCA.R + 05_1_TSNE.R<br/><i>visualización (no reduce dimensiones)</i>"]
+        S6["06_Resultados.R<br/><i>caracterización de los 4 clusters</i>"]
+        S7["07_Inferencia_Clusters.R<br/><i>χ² / V de Cramér por variable</i>"]
+        S71["07_1_Ranking_Variables_RF.R<br/><i>árbol de decisión + Random Forest:<br/>ranking multivariado vs. univariado</i>"]
+        S123 --> S41K --> S4 --> S5 --> S6 --> S7 --> S71
+    end
+
+    DATA --> S123
+
+    S71 --> HALLAZGO{{"Hallazgo de datos:<br/>58% de las filas son coaliciones,<br/>no partidos individuales"}}
+
+    subgraph N2["NIVEL 2 · solo partidos no-coalición, con votos electorales reales"]
+        direction TB
+        S8["08_Cruce_Votos_Electorales.R<br/>08_1_Estadisticas_Descriptivas.R<br/><i>cruce con votos 1958-2023 (requiere<br/>datos externos, ver data/DATA.md)</i>"]
+        S9["09_Segundo_Nivel_Preparacion.R<br/><i>base de 2.155 partidos no-coalición</i>"]
+        S10["10_Segundo_Nivel_Seleccion_K.R<br/><i>codo / silhouette / CH → k=3</i>"]
+        S11["11_Segundo_Nivel_Modelo.R<br/><i>modelo K-Means, k=3</i>"]
+        S8 --> S9 --> S10 --> S11
+    end
+
+    HALLAZGO --> S8
+
+    S11 --> S12["12_Analisis_Temporal.R<br/><i>composición de clusters<br/>por periodo de reforma</i>"]
+    S11 --> S13["13_Longevidad_Institucionalizacion.R<br/><i>longevidad organizativa<br/>(prueba independiente del clustering)</i>"]
+
+    subgraph ROBUSTEZ["scripts/exploratorio/ · robustez (NO entran al reporte principal)"]
+        direction TB
+        EK["kernel_pca_spectral_clustering.R<br/><i>¿se sostiene el cluster élite<br/>con otro método?</i>"]
+        EN["naive_bayes_nombres_nlp.R<br/><i>¿el nombre del partido predice<br/>su cluster? (resultado negativo)</i>"]
+    end
+    S4 -.chequeo.-> EK
+    S11 -.chequeo.-> EN
+
+    TEORIA["Reencuadre teórico:<br/>institucionalización, nacionalización, nicho<br/>(Panebianco; Mainwaring & Scully;<br/>Jones & Mainwaring; Meguid)"]
+    S71 -.-> TEORIA
+
+    S12 --> REPORTE["Reporte de política<br/>(secciones 6-7 del reporte)"]
+    S13 --> REPORTE
+    TEORIA --> REPORTE
 ```
 
 Este diagrama resume la *dirección* de la metodología empírica: no fue un
 plan lineal decidido de antemano, sino una secuencia en la que cada
 hallazgo (el bug de codificación, el descubrimiento de las coaliciones, la
-debilidad de la ideología como marcador) reorientó el siguiente paso.
+debilidad de la ideología como marcador) reorientó el siguiente paso. Los
+scripts `01`–`07` y `07_1` corresponden al nivel 1 (universo completo); a
+partir de `08` todo el pipeline trabaja sobre el nivel 2 (solo partidos
+no-coalición, con votos reales); `12` y `13` son las dos pruebas de
+validación independientes del clustering (temporal y longevidad,
+respectivamente); y `scripts/exploratorio/` son chequeos de robustez que
+no entraron al reporte final (ver sección "Cómo correr el pipeline").
 
 ## Cómo se construyó este análisis
 
