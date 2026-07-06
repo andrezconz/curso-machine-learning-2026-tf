@@ -113,6 +113,14 @@ El modelo final (k=4, nstart=100, iter.max=1000, semilla=2025) explica el 25,2% 
 
 *Figura 2. Clusters proyectados sobre las dos primeras componentes principales del PCA (uso exclusivamente ilustrativo; el clustering se estimó sobre las variables originales, no sobre los componentes).*
 
+Como complemento, se proyectaron los mismos datos con t-SNE, una técnica no lineal que preserva la vecindad local mejor que una proyección lineal como PCA (cubierta en la sesión de aprendizaje no supervisado del curso). A diferencia de UMAP, que falló en inicializarse por la enorme cantidad de perfiles categóricos idénticos o casi idénticos entre partidos, t-SNE sí produjo una proyección estable.
+
+![Figura 3. Proyección t-SNE de los 4 clusters.](../figuras/fig5_tsne_nivel1.png)
+
+*Figura 3. Proyección t-SNE de los 4 clusters (nivel 1). Cada mancha compacta refleja un perfil categórico exacto compartido por muchos partidos; la cercanía local es informativa, pero —siguiendo la guía del curso— el tamaño y la distancia entre manchas no debe interpretarse literalmente.*
+
+La proyección revela una estructura más fina de la que sugiere el PCA lineal: los datos forman decenas de manchas compactas y bien separadas (cada una, un perfil categórico exacto repetido por muchos partidos), y los 4 clusters de K-Means no siempre coinciden con esas manchas de forma perfecta —el cluster 1 agrupa varias manchas distintas bajo una misma etiqueta—, mientras que el cluster 4 ("maquinarias electorales multinivel", el más pequeño) aparece como su propio grupo compacto y separado, lo que respalda su interpretación como un perfil sustantivamente distinto y no como un artefacto del algoritmo.
+
 ### 5.3 Validación estadística de los perfiles
 
 Para cada una de las 12 variables originales se realizó una prueba χ² de independencia frente a la asignación de cluster, reportando la V de Cramér (tamaño del efecto) y el valor p ajustado por múltiples comparaciones (Benjamini-Hochberg). Las 12 variables resultaron significativas tras el ajuste (p < 0.001), lo que confirma que la partición de K-Means captura patrones reales y no ruido; las variables con mayor asociación son:
@@ -157,9 +165,9 @@ Votos históricos promedio por partido y nivel electoral (1958–2023), por clus
 
 El patrón se sostiene en los siete niveles: el cluster "Partido institucionalizado" supera al "Partido vehículo" por un factor de 60 a 1.300 veces según el nivel, y no es simplemente un resultado impulsado por una sola elección (por ejemplo, solo presidencia o solo senado). El cluster "Partido de nicho" se distingue por una presencia relativamente alta en gobernación y presidencia frente a una votación mínima en senado, coherente con partidos de representación de intereses específicos que rara vez compiten a nivel nacional.
 
-![Figura 3. Segundo nivel: clusters con votos reales.](../figuras/fig4_nivel2_pca.png)
+![Figura 4. Segundo nivel: clusters con votos reales.](../figuras/fig4_nivel2_pca.png)
 
-*Figura 3. Segundo nivel: clusters de partidos no-coalición usando votos electorales reales (1958-2023), proyectados sobre las dos primeras componentes principales.*
+*Figura 4. Segundo nivel: clusters de partidos no-coalición usando votos electorales reales (1958-2023), proyectados sobre las dos primeras componentes principales.*
 
 El cluster "Partido institucionalizado" (4,8% de los partidos no-coalición) incluye, de forma reconocible, al Partido Liberal Colombiano (43,6 millones de votos históricos acumulados al Senado), Partido Conservador Colombiano (30,5 millones), Cambio Radical, Polo Democrático Alternativo, Alianza Verde, Nuevo Liberalismo y Opción Ciudadana, entre otros. Este resultado, obtenido con la magnitud real del respaldo electoral y restringido a partidos genuinos (sin las coaliciones ad hoc), corrobora con otra fuente de datos el hallazgo central de la sección 6: una fracción muy pequeña de las organizaciones políticas colombianas concentra la enorme mayoría del músculo electoral real del país.
 

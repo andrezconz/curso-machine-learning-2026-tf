@@ -62,7 +62,7 @@ Ver el reporte completo en [`reporte/Reporte_Final_Partidos_Politicos.docx`](rep
 Requiere R (>= 4.x) con los paquetes: `tidyverse`, `readxl`, `janitor`,
 `skimr`, `caret`, `cluster`, `factoextra`, `corrplot`, `fpc`, `DescTools`,
 `broom`, `scales`, `reshape2`, `ggalluvial`, `data.table`, `haven`,
-`stringi`, `kernlab`, `mclust`, `tidytext`, `e1071`.
+`stringi`, `kernlab`, `mclust`, `tidytext`, `e1071`, `Rtsne`.
 
 Ejecutar desde la raíz del repositorio, en orden:
 
@@ -74,6 +74,7 @@ Ejecutar desde la raíz del repositorio, en orden:
 | `04_1_Seleccion_K.R` | Selección de k (codo, silhouette, Calinski-Harabasz) |
 | `04_KMeans.R` | Modelo K-Means final (nivel 1, k=4) |
 | `05_PCA.R` | Componentes principales (visualización) |
+| `05_1_TSNE.R` | Proyección t-SNE no lineal (complementa la PCA; UMAP falló por perfiles categóricos duplicados) |
 | `06_Resultados.R` | Caracterización de los 4 clusters |
 | `07_Inferencia_Clusters.R` | χ², V de Cramér por variable |
 | `08_Cruce_Votos_Electorales.R` | Cruce con votos reales 1958–2023 (requiere datos no incluidos, ver `data/DATA.md`) |
