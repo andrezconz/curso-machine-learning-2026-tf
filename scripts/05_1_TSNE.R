@@ -3,15 +3,14 @@
 # PROYECCION t-SNE DE LOS CLUSTERS (NIVEL 1)
 #
 # Complementa la PCA lineal del script 5 con una proyeccion no
-# lineal que preserva mejor la vecindad local (cubierta en la
-# sesion de aprendizaje no supervisado del curso). Se probo
-# tambien UMAP, pero fallo al inicializar por la enorme cantidad
-# de perfiles categoricos identicos o casi identicos entre
-# partidos (grafo de vecinos con componentes desconectados);
-# t-SNE si produjo una proyeccion estable.
+# lineal que preserva mejor la vecindad local. Se probo tambien
+# UMAP, pero fallo al inicializar por la enorme cantidad de
+# perfiles categoricos identicos o casi identicos entre partidos
+# (grafo de vecinos con componentes desconectados); t-SNE si
+# produjo una proyeccion estable.
 #
-# Requiere resultados/datos_ml.rds y resultados/modelo_kmeans.rds
-# (scripts 3 y 4). Instalar Rtsne si hace falta:
+# Requiere datos_ml.rds y modelo_kmeans.rds (scripts 3 y 4, que los
+# guardan en la raiz del proyecto). Instalar Rtsne si hace falta:
 # install.packages("Rtsne")
 ###############################################################
 
@@ -20,8 +19,8 @@ suppressPackageStartupMessages({
   library(Rtsne)
 })
 
-datos_ml <- readRDS("resultados/datos_ml.rds")
-modelo_kmeans <- readRDS("resultados/modelo_kmeans.rds")
+datos_ml <- readRDS("datos_ml.rds")
+modelo_kmeans <- readRDS("modelo_kmeans.rds")
 
 X <- as.matrix(datos_ml)
 

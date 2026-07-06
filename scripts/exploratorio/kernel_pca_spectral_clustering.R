@@ -2,10 +2,11 @@
 # EXPLORATORIO: KERNEL PCA Y SPECTRAL CLUSTERING (ROBUSTEZ)
 #
 # Chequeo de robustez del modelo del nivel 1 (script 4). NO forma
-# parte del pipeline principal; el resultado (ARI = 0.71, el
-# cluster minoritario "maquinarias electorales" no se recupera
-# con un kernel RBF) se resume como limitacion en la seccion 7
-# del reporte, sin reemplazar el modelo K-Means reportado.
+# parte del pipeline principal; el resultado (ARI = 0.57, el
+# cluster minoritario de partidos institucionalizados y nacionalizados
+# no se recupera como grupo propio con un kernel RBF) se resume como
+# limitacion en la seccion 7 del reporte, sin reemplazar el modelo
+# K-Means reportado.
 #
 # Requiere resultados/datos_ml.rds y resultados/modelo_kmeans.rds
 # (scripts 3 y 4).
@@ -45,7 +46,7 @@ p_kpca <- ggplot(kpc_coord, aes(KPC1, KPC2, color = cluster_kmeans)) +
   theme_minimal(base_size = 13) +
   labs(title = "Kernel PCA (RBF) coloreado por cluster de K-Means",
        x = "KPC1", y = "KPC2", color = "Cluster K-Means")
-ggsave("../figuras/exploratorio_kernelpca.png", p_kpca, width = 7, height = 5, dpi = 150)
+ggsave("figuras/exploratorio_kernelpca.png", p_kpca, width = 7, height = 5, dpi = 150)
 
 cat("\n========================================\n")
 cat("2. SPECTRAL CLUSTERING (k=4)\n")

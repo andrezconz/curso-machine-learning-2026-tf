@@ -27,8 +27,9 @@ sectorial/identitaria.
 
 Ver el reporte completo en [`reporte/Reporte_Final_Partidos_Politicos.docx`](reporte/Reporte_Final_Partidos_Politicos.docx)
 (también disponible en [`reporte/Reporte_Final_Partidos_Politicos.md`](reporte/Reporte_Final_Partidos_Politicos.md)).
-El cuerpo del reporte se mantiene en 12 páginas o menos; todas las tablas de
-apoyo se movieron a una sección de **Anexos** al final del documento.
+Todas las tablas de apoyo se presentan en una sección de **Anexos** al
+final del documento, para no interrumpir el hilo argumentativo del cuerpo
+del reporte.
 
 ## Resumen de hallazgos
 
@@ -75,7 +76,7 @@ apoyo se movieron a una sección de **Anexos** al final del documento.
 flowchart TD
     A["partidos.xlsx<br/>5.143 partidos/movimientos/coaliciones<br/>(Cabra-Ruíz et al., 2023)"] --> B["01-03: Limpieza y codificación dummy<br/>(2 bugs de codificación corregidos)"]
     B --> C["04: K-Means k=4<br/>Nivel 1 · universo completo<br/>participación electoral binaria"]
-    C --> D["05-07: PCA, t-SNE,<br/>validación χ² / V de Cramér"]
+    C --> D["05-07: PCA, t-SNE,<br/>validación χ² / V de Cramér<br/>+ ranking RF/árbol (07_1)"]
     D --> E{{"Hallazgo de datos:<br/>58% de las filas son coaliciones,<br/>no partidos individuales"}}
     E --> F["08-09: Cruce con votos<br/>electorales reales 1958-2023"]
     F --> G["10-11: K-Means k=3<br/>Nivel 2 · solo partidos no-coalición<br/>votos reales por nivel"]
@@ -101,7 +102,12 @@ El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
    (χ²/V de Cramér). Al auditar este pipeline se encontraron y corrigieron
    dos errores reales — una codificación dummy asimétrica que duplicaba el
    peso de una variable, e imputación por moda de códigos centinela que
-   fabricaba señal falsa (detalle en la sección 7 del reporte).
+   fabricaba señal falsa (detalle en la sección 7 del reporte). El script
+   `07_1_Ranking_Variables_RF.R` complementa la V de Cramér (univariada)
+   con un árbol de decisión y un Random Forest (multivariados) para ver si
+   el ranking de variables se sostiene al controlar por su correlación
+   mutua — se sostiene en general, con una excepción reveladora (sección
+   5.3 del reporte).
 2. **Segundo nivel con votos reales** (scripts 08–11): al cruzar la base con
    resultados electorales 1958–2023 se descubrió que el 58% de las filas
    son coaliciones, no partidos — un hallazgo de datos que reencuadra todo
@@ -125,7 +131,18 @@ El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
 Requiere R (>= 4.x) con los paquetes: `tidyverse`, `readxl`, `janitor`,
 `skimr`, `caret`, `cluster`, `factoextra`, `corrplot`, `fpc`, `DescTools`,
 `broom`, `scales`, `reshape2`, `ggalluvial`, `data.table`, `haven`,
-`stringi`, `kernlab`, `mclust`, `tidytext`, `e1071`, `Rtsne`.
+`stringi`, `kernlab`, `mclust`, `tidytext`, `e1071`, `Rtsne`, `rpart`,
+`randomForest`.
+
+`01_configuracion.R`, `02_EDA.R` y `03_Procesamiento.R` conservan el estilo
+del análisis original: son un único script largo dividido en tres archivos
+por legibilidad, y comparten el objeto `partidos` en memoria. Deben
+ejecutarse con `source()` en una sola sesión de R, en ese orden (o
+pegarse en la consola); `03_Procesamiento.R` guarda `datos_ml.rds` al
+final, que es lo único que necesitan los scripts `04` en adelante. Desde
+`04_1_Seleccion_K.R` en adelante cada script es independiente: vuelve a
+cargar sus insumos desde disco, así que puede correrse por separado con
+`Rscript`.
 
 Todos los modelos usan la semilla **20260706** (`set.seed(20260706)`). Con
 K-Means y `nstart=100` la partición converge a la misma solución
@@ -147,6 +164,7 @@ Ejecutar desde la raíz del repositorio, en orden:
 | `05_1_TSNE.R` | Proyección t-SNE no lineal (complementa la PCA; UMAP falló por perfiles categóricos duplicados) |
 | `06_Resultados.R` | Caracterización de los 4 clusters |
 | `07_Inferencia_Clusters.R` | χ², V de Cramér por variable |
+| `07_1_Ranking_Variables_RF.R` | Ranking multivariado de variables (árbol de decisión y Random Forest) vs. V de Cramér (sección 5.3) |
 | `08_Cruce_Votos_Electorales.R` | Cruce con votos reales 1958–2023 (requiere datos no incluidos, ver `data/DATA.md`) |
 | `08_1_Estadisticas_Descriptivas.R` | Tablas descriptivas de partidos.xlsx y de los votos históricos (secciones 4.3 y 5.4) |
 | `09_Segundo_Nivel_Preparacion.R` | Prepara datos del segundo nivel (partidos no-coalición + votos) |
@@ -162,8 +180,9 @@ del nombre del partido (resultado negativo: el nombre no predice el éxito
 electoral de forma confiable).
 
 Los scripts `01`–`07` guardan sus resultados en la raíz del proyecto (tal
-como en el análisis original); los scripts `08` en adelante guardan en
-`resultados/`.
+como en el análisis original); los scripts `08` en adelante —incluido
+`07_1_Ranking_Variables_RF.R`, añadido después de curar `resultados/`—
+guardan directamente en `resultados/`.
 
 **`resultados/` está curado, no es un volcado completo**: se excluyeron
 exports crudos a nivel de fila (`coordenadas_pca.csv`,
@@ -206,8 +225,6 @@ in Economics 2026, Pontificia Universidad Javeriana.
 Este repositorio y el reporte que documenta se desarrollaron con el apoyo
 de **Claude (Claude Code, Anthropic)** como asistente de análisis: revisión
 y depuración del pipeline de R, ejecución de los modelos, redacción y
-edición del reporte, y organización de esta documentación. El protocolo
-del curso permite explícitamente el uso de herramientas de inteligencia
-artificial, con la condición de que el autor comprenda y pueda defender
-cada decisión metodológica del trabajo — condición que se verifica en la
-sustentación oral.
+edición del reporte, y organización de esta documentación. Cada decisión
+metodológica —de la elección de k a la corrección de los errores de la
+sección 7— fue evaluada y validada por el autor.

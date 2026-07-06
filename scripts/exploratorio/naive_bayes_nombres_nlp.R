@@ -1,16 +1,17 @@
 ###############################################################
 # EXPLORATORIO: NAIVE BAYES SOBRE TEXTO DEL NOMBRE (NLP)
 #
-# Pregunta: ¿predice el texto del nombre de un partido su nivel
-# electoral (Vehiculo marginal / Nicho / Elite nacional, script 11)?
+# Pregunta: ¿predice el texto del nombre de un partido su cluster del
+# segundo nivel (partido no institucionalizado / de nicho /
+# institucionalizado, script 11)?
 #
 # Resultado (ver README): NO de forma confiable. Con priors por
-# defecto, accuracy 85.1% queda por debajo del baseline (85.7%,
-# clase mayoritaria) y recall de "Elite nacional" es 0%. Con
-# priors uniformes mejora el recall de clases minoritarias pero
-# cae la exactitud a 66.3% (Kappa se mantiene bajo, ~0.1-0.12).
-# Se documenta como hallazgo negativo honesto, NO se incluyo en
-# el reporte principal.
+# defecto, accuracy (84.1%) queda por debajo del baseline (85.7%,
+# clase mayoritaria) y el recall de "Partido institucionalizado" es
+# marginal (8%). Con priors uniformes mejora el recall de clases
+# minoritarias pero cae la exactitud global (Kappa se mantiene bajo,
+# ~0.1-0.12 en ambos casos). Se documenta como hallazgo negativo
+# honesto, NO se incluyo en el reporte principal.
 #
 # Requiere resultados/nivel2_partidos_clusterizados.csv (script 11).
 ###############################################################
@@ -99,19 +100,19 @@ cat("Accuracy:", round(100 * cm$overall["Accuracy"], 1), "%  | Kappa:", round(cm
 print(round(cm$byClass[, c("Precision", "Recall", "F1")], 3))
 
 ###############################################################
-# 7. PALABRAS MAS DISCRIMINATIVAS PARA "ELITE NACIONAL"
+# 7. PALABRAS MAS DISCRIMINATIVAS PARA "PARTIDO INSTITUCIONALIZADO"
 ###############################################################
 
 tabla_prob <- modelo_nb$tables
 palabras <- names(X_train)
-prob_elite <- sapply(palabras, function(p) tabla_prob[[p]]["Elite nacional", "1"])
-prob_marginal <- sapply(palabras, function(p) tabla_prob[[p]]["Vehiculo marginal", "1"])
+prob_elite <- sapply(palabras, function(p) tabla_prob[[p]]["Partido institucionalizado", "1"])
+prob_marginal <- sapply(palabras, function(p) tabla_prob[[p]]["Partido no institucionalizado", "1"])
 
 ratio <- data.frame(palabra = palabras, p_elite = prob_elite, p_marginal = prob_marginal) |>
   mutate(ratio = p_elite / (p_marginal + 0.001)) |>
   arrange(desc(ratio))
 
-cat("\n--- Top 15 palabras mas asociadas a 'Elite nacional' ---\n")
+cat("\n--- Top 15 palabras mas asociadas a 'Partido institucionalizado' ---\n")
 print(head(ratio, 15))
 
 ###############################################################

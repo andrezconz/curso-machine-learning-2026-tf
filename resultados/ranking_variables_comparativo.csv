@@ -1,0 +1,13 @@
+"variable","cramer_v","importancia_arbol","MeanDecreaseAccuracy","importancia_rf","rank_cramer","rank_arbol","rank_rf"
+"grupo_representativo_1",0.571,20.7,79.4,32,4,3,1
+"grupo_representativo_2",0.573,22.8,29.1,26.9,3,2,2
+"ideologia",0.615,26.8,25.4,24.3,2,1,3
+"gradonac",0.542,18.4,13.6,10.2,5,4,4
+"part_presidencia",0.821,1.1,59.5,2.5,1,8,5
+"part_alcaldia",0.317,3.2,15,1.1,8,6,6
+"tradicional",0.305,NA,13.7,1,9,11,7
+"part_camara",0.319,4.7,14.7,0.6,7,5,8
+"part_concejo",0.202,1.2,15.6,0.5,11,7,9
+"part_senado",0.326,NA,13.6,0.3,6,11,10.5
+"part_asamblea",0.263,1,14.7,0.3,10,9,10.5
+"part_gobernacion",0.169,NA,14.8,0.2,12,11,12

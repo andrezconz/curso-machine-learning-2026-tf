@@ -11,7 +11,7 @@
 # el puente entre el resultado puramente algorítmico del script 4 y
 # la narrativa de política pública: sin esta caracterización,
 # "cluster 1" seguiría siendo una etiqueta vacía en vez de
-# "maquinarias electorales multinivel".
+# "partidos institucionalizados y nacionalizados".
 ###############################################################
 
 rm(list = ls())

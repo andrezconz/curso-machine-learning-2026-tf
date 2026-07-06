@@ -9,7 +9,7 @@ Reporte de política · 6 de julio de 2026
 **Data:** Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez (2023); Torres, Barinas-Forero, Forero-Mesa, Sánchez & Tibavisco (2023). Centro de Estudios sobre Desarrollo Económico (CEDE), Universidad de los Andes.
 *Desarrollado con el apoyo de Claude (Claude Code, Anthropic) como asistente de análisis y redacción.*
 
-> Nota: las tablas de apoyo se presentan en la sección **Anexos**, al final de este documento, para mantener el cuerpo del reporte dentro de las 12 páginas acordadas.
+> Nota: las tablas de apoyo se presentan en la sección **Anexos**, al final de este documento, para no interrumpir el hilo argumentativo del cuerpo del reporte.
 
 ---
 
@@ -27,7 +27,7 @@ Con estos insumos se construyeron dos niveles de análisis: (1) K-Means sobre el
 
 ¿Qué tipologías empíricas de partidos y movimientos políticos colombianos, entre 1848 y 2023, emergen del análisis conjunto de sus características organizativas, electorales e ideológicas?
 
-Es una pregunta descriptiva/exploratoria: no busca predecir una etiqueta ya conocida, sino descubrir agrupamientos latentes a partir de los atributos disponibles. El protocolo del curso admite explícitamente preguntas de este tipo ("¿qué grupos o patrones existen?"), y la ausencia de una variable de resultado observada hace que el aprendizaje no supervisado sea la estrategia natural.
+Es una pregunta descriptiva/exploratoria: no busca predecir una etiqueta ya conocida, sino descubrir agrupamientos latentes a partir de los atributos disponibles. Ninguna fuente documenta de antemano a qué tipo pertenece cada partido; la ausencia de esa variable de resultado observada hace que el aprendizaje no supervisado sea la estrategia natural, y no una regresión o clasificación supervisada.
 
 ## 2. Motivación
 
@@ -83,7 +83,7 @@ El modelo final (k=4, nstart=100, iter.max=1000, semilla=20260706) explica el 25
 
 *Figura 2. Clusters proyectados sobre las dos primeras componentes principales del PCA (uso ilustrativo; el clustering se estimó sobre las variables originales).*
 
-Como complemento, se proyectaron los mismos datos con t-SNE, técnica no lineal que preserva mejor la vecindad local (cubierta en la sesión de no supervisado del curso). UMAP falló al inicializar por la enorme cantidad de perfiles categóricos idénticos entre partidos; t-SNE sí produjo una proyección estable (Figura 3), revelando decenas de manchas compactas —cada una, un perfil categórico exacto— que los 4 clusters de K-Means no siempre respetan (el cluster 3 agrupa varias bajo una etiqueta), mientras el cluster 1 ("partidos institucionalizados y nacionalizados") aparece como su propio grupo compacto, respaldando que es un perfil sustantivo y no un artefacto del algoritmo.
+Como complemento, se proyectaron los mismos datos con t-SNE, técnica no lineal que preserva mejor la vecindad local que el PCA. UMAP falló al inicializar por la enorme cantidad de perfiles categóricos idénticos entre partidos; t-SNE sí produjo una proyección estable (Figura 3), revelando decenas de manchas compactas —cada una, un perfil categórico exacto— que los 4 clusters de K-Means no siempre respetan (el cluster 3 agrupa varias bajo una etiqueta), mientras el cluster 1 ("partidos institucionalizados y nacionalizados") aparece como su propio grupo compacto, respaldando que es un perfil sustantivo y no un artefacto del algoritmo.
 
 ![Figura 3. Proyección t-SNE de los 4 clusters.](../figuras/fig5_tsne_nivel1.png)
 
@@ -93,11 +93,15 @@ Como complemento, se proyectaron los mismos datos con t-SNE, técnica no lineal 
 
 Para cada una de las 12 variables originales se realizó una prueba χ² frente a la asignación de cluster, con V de Cramér y ajuste Benjamini-Hochberg (**Tabla A6**, Anexos). Las 12 variables resultaron significativas (p < 0,001), confirmando que la partición captura patrones reales, no ruido; encabezan `part_presidencia` (V=0,821), `ideologia` (0,615) y `grupo_representativo_2` (0,573). Tras corregir el error de codificación dummy (sección 7), `tradicional` —que con el error mostraba V=1,0, sugiriendo que definía un cluster por sí sola— pasó a 0,305, su peso real entre las 12 variables; la señal original estaba inflada por el artefacto de codificación.
 
+La V de Cramér evalúa cada variable de forma aislada frente al cluster, sin controlar por su correlación con las demás; dos variables redundantes entre sí pueden aparecer ambas como "fuertes" aunque aporten la misma señal, y el criterio no escala bien si el número de variables candidatas crece. Como complemento se entrenaron un árbol de decisión único y un Random Forest (500 árboles) para predecir el cluster a partir de las 12 variables originales en conjunto (75%/25% train/test, semilla=20260706). Ambos recuperan el cluster con exactitud muy alta (99,1% y 99,6%) —esperable, dado que K-Means ya agrupó a los partidos usando esas mismas variables—, con el cluster 1 —el más pequeño y menos cohesionado (sección 5.2)— como el más difícil de recuperar (recall 47,8% y 82,6%), coherente con su silhouette negativo.
+
+El ranking de importancia multivariada (MeanDecreaseGini) coincide en general con la V de Cramér —correlación de rangos de Spearman de 0,79 con Random Forest y 0,62 con el árbol único (**Tabla A7**, Anexos)— pero difiere de forma reveladora en `part_presidencia`: la variable con mayor V de Cramér (0,821, aislada) cae al quinto lugar en Random Forest. La razón es que `part_presidencia` identifica casi por sí sola al cluster 1, pero ese mismo cluster ya queda bien delimitado por `ideologia`, `grupo_representativo` y `gradonac`; una vez esas variables están en el modelo, la información adicional que aporta `part_presidencia` es marginal. Es precisamente el tipo de redundancia que una prueba univariada, variable por variable, no puede detectar, y que un modelo multivariado sí revela de forma directa.
+
 ### 5.4 Segundo nivel: validación con votos electorales reales (1958–2023)
 
 Los indicadores `part_*` son binarios, sin capturar la magnitud del respaldo electoral. Se incorporaron los resultados electorales históricos (Torres et al., 2023) para los mismos siete niveles, a nivel de candidato-municipio-elección. Al cruzarlos con la base de partidos se confirmó que el 58% de las 5.143 organizaciones (2.988 filas) son coaliciones, en su mayoría de alcance local —aunque el 71% está clasificado como `gradonac=1` ("nacional"), y muchas son alianzas puntuales Liberal-Conservador, no coaliciones entre movimientos marginales—.
 
-Dado que no es posible atribuir de forma no arbitraria los votos de una coalición a un partido individual, esas filas se excluyeron, dejando un universo de 2.155 partidos no-coalición. El emparejamiento de nombres usó normalización ligera (mayúsculas, sin tildes/puntuación, sin palabras genéricas como "PARTIDO" o "MOVIMIENTO"), logrando emparejar el 80,6% de los votos históricos no-coalición (1.636 de 2.119 partidos). El 19,4% restante corresponde a variantes con eslóganes propios que la normalización ligera no resuelve sin riesgo de falsos positivos. La estadística descriptiva de los votos por nivel está en la **Tabla A7** (Anexos): la enorme brecha entre promedio y mediana en todos los niveles confirma el fuerte sesgo a la derecha que motivó la transformación log(1+votos).
+Dado que no es posible atribuir de forma no arbitraria los votos de una coalición a un partido individual, esas filas se excluyeron, dejando un universo de 2.155 partidos no-coalición. El emparejamiento de nombres usó normalización ligera (mayúsculas, sin tildes/puntuación, sin palabras genéricas como "PARTIDO" o "MOVIMIENTO"), logrando emparejar el 80,6% de los votos históricos no-coalición (1.636 de 2.119 partidos). El 19,4% restante corresponde a variantes con eslóganes propios que la normalización ligera no resuelve sin riesgo de falsos positivos. La estadística descriptiva de los votos por nivel está en la **Tabla A8** (Anexos): la enorme brecha entre promedio y mediana en todos los niveles confirma el fuerte sesgo a la derecha que motivó la transformación log(1+votos).
 
 Para cada uno de los 2.155 partidos no-coalición se sumaron los votos por nivel (log-transformados) y se combinaron, con la misma codificación dummy, con las variables categóricas originales. La selección de k favoreció valores bajos (silhouette = 0,542 en k=2 y 0,528 en k=3); se eligió k=3 en vez de k=2 porque separa un tercer grupo —una élite partidista minoritaria— que k=2 fusiona con el grupo intermedio, la distinción más relevante para el reporte de política. Las siete variables de votos (no solo senado) entraron todas al K-Means junto con las categóricas; el tamaño, composición y perfil de votos por cluster están en las **Tablas A8 y A9** (Anexos).
 
@@ -111,7 +115,7 @@ El patrón se sostiene en los siete niveles: "Partido institucionalizado" supera
 
 ### 5.5 Longevidad organizativa: la institucionalización puesta a prueba
 
-Si la institucionalización es la capacidad de sobrevivir en el tiempo más allá de la fundación (Panebianco, 1988; Mainwaring & Scully, 1995), la longevidad de cada partido (años entre fundación y último registro, campo `temporalidad`) ofrece una prueba directa —independiente del clustering— de si los nombres del segundo nivel son adecuados (**Tabla A10**, Anexos). El contraste es contundente: la mitad de los partidos no institucionalizados y de nicho desaparecen en el mismo año en que se registran (mediana = 0), mientras los institucionalizados sobreviven en promedio 13,3 años —Liberal y Conservador, fundados en 1848 y 1849 y vigentes en 2022, marcan el máximo de 174 años—. Esta brecha, obtenida con una variable que no participó en el clustering, confirma que institucionalización, más que ideología, es el eje que mejor distingue a los partidos colombianos.
+Si la institucionalización es la capacidad de sobrevivir en el tiempo más allá de la fundación (Panebianco, 1988; Mainwaring & Scully, 1995), la longevidad de cada partido (años entre fundación y último registro, campo `temporalidad`) ofrece una prueba directa —independiente del clustering— de si los nombres del segundo nivel son adecuados (**Tabla A11**, Anexos). El contraste es contundente: la mitad de los partidos no institucionalizados y de nicho desaparecen en el mismo año en que se registran (mediana = 0), mientras los institucionalizados sobreviven en promedio 13,3 años —Liberal y Conservador, fundados en 1848 y 1849 y vigentes en 2022, marcan el máximo de 174 años—. Esta brecha, obtenida con una variable que no participó en el clustering, confirma que institucionalización, más que ideología, es el eje que mejor distingue a los partidos colombianos.
 
 ## 6. Reporte de política
 
@@ -139,7 +143,7 @@ Se recomienda usar esta tipología como insumo descriptivo para el diseño de re
 
 ### 6.3 Evidencia temporal: ¿funcionaron las reformas?
 
-Usando el año de fundación, se comparó la composición de los clusters del segundo nivel entre partidos no-coalición fundados en cuatro periodos delimitados por hitos de reforma: antes de 1991, 1991–2003, 2003–2011 (Acto Legislativo 01/2003, umbral electoral) y 2011–2023 (Ley 1475/2011, requisitos de personería) (**Tabla A11**, Anexos). El patrón es contrario al objetivo declarado: el número de partidos nuevos se disparó tras cada reforma (de 395 en 2003–2011 a 1.097 en 2011–2023, un periodo más corto), mientras la probabilidad de que un partido nuevo llegue a "institucionalizado" cayó de 14,4% a 1,2%. Ni el umbral de 2003 ni la Ley 1475 frenaron la creación de partidos no institucionalizados; si acaso, coincidieron con una aceleración de su proliferación, mientras alcanzar peso real se volvió más difícil frente a la ventaja consolidada de organizaciones históricas (Liberal, Conservador). Esto refuerza la recomendación de exigir desempeño multinivel sostenido, no un umbral de votación puntual.
+Usando el año de fundación, se comparó la composición de los clusters del segundo nivel entre partidos no-coalición fundados en cuatro periodos delimitados por hitos de reforma: antes de 1991, 1991–2003, 2003–2011 (Acto Legislativo 01/2003, umbral electoral) y 2011–2023 (Ley 1475/2011, requisitos de personería) (**Tabla A12**, Anexos). El patrón es contrario al objetivo declarado: el número de partidos nuevos se disparó tras cada reforma (de 395 en 2003–2011 a 1.097 en 2011–2023, un periodo más corto), mientras la probabilidad de que un partido nuevo llegue a "institucionalizado" cayó de 14,4% a 1,2%. Ni el umbral de 2003 ni la Ley 1475 frenaron la creación de partidos no institucionalizados; si acaso, coincidieron con una aceleración de su proliferación, mientras alcanzar peso real se volvió más difícil frente a la ventaja consolidada de organizaciones históricas (Liberal, Conservador). Esto refuerza la recomendación de exigir desempeño multinivel sostenido, no un umbral de votación puntual.
 
 ## 7. Limitaciones
 
@@ -154,6 +158,7 @@ Ambas correcciones cambiaron los resultados de forma material (la V de Cramér d
 
 - **Predicción vs. causalidad**: ejercicio puramente descriptivo. La asociación entre éxito multinivel y baja clasificación ideológica (cluster 1) es correlacional.
 - **Estabilidad del cluster pequeño**: el cluster 1 (n=93) mostró sensibilidad no trivial a la secuencia aleatoria incluso con 100 inicializaciones: corridas exploratorias produjeron tamaños entre 46 y 211 partidos para el mismo grupo sustantivo. Interpretar como patrón real, no frontera exacta.
+- **Circularidad del ranking multivariado (sección 5.3)**: el árbol y el Random Forest predicen el cluster a partir de las mismas variables con las que K-Means lo construyó, por lo que su exactitud alta no es una validación independiente (a diferencia de los votos electorales en 5.4 o la longevidad en 5.5, ninguno de los cuales entró al clustering); su aporte real es el ranking de importancia relativa, no la exactitud predictiva en sí misma.
 - **Agregación temporal**: se agrupan partidos desde 1848 sin distinguir el marco institucional de cada periodo (Constitución de 1991, reforma de 2003); parte de la señal puede reflejar época de fundación, no un tipo invariante.
 - **Calidad de la clasificación ideológica**: se construye por revisión de estatutos (juicio interpretativo del CEDE); ~40% de los partidos no tiene ideología clasificable.
 - **Generalización**: los resultados describen el universo histórico registrado, no necesariamente los partidos activos hoy.
@@ -267,7 +272,26 @@ Tablas de apoyo referenciadas en el cuerpo del reporte.
 
 *Fuente: elaboración propia.*
 
-### Tabla A7. Estadística descriptiva de los votos históricos por nivel (1958–2023)
+### Tabla A7. Ranking de variables: V de Cramér vs. importancia multivariada (árbol y Random Forest)
+
+| Variable | V de Cramér (rango) | Random Forest % (rango) | Árbol único % (rango) |
+|---|---|---|---|
+| part_presidencia | 0.821 (1) | 2.5% (5) | 1.1% (8) |
+| ideologia | 0.615 (2) | 24.3% (3) | 26.8% (1) |
+| grupo_representativo_2 | 0.573 (3) | 26.9% (2) | 22.8% (2) |
+| grupo_representativo_1 | 0.571 (4) | 32.0% (1) | 20.7% (3) |
+| gradonac | 0.542 (5) | 10.2% (4) | 18.4% (4) |
+| part_senado | 0.326 (6) | 0.3% (10) | — (11) |
+| part_camara | 0.319 (7) | 0.6% (8) | 4.7% (5) |
+| part_alcaldia | 0.317 (8) | 1.1% (6) | 3.2% (6) |
+| tradicional | 0.305 (9) | 1.0% (7) | — (11) |
+| part_asamblea | 0.263 (10) | 0.3% (10) | 1.0% (9) |
+| part_concejo | 0.202 (11) | 0.5% (9) | 1.2% (7) |
+| part_gobernacion | 0.169 (12) | 0.2% (12) | — (11) |
+
+*Fuente: elaboración propia.*
+
+### Tabla A8. Estadística descriptiva de los votos históricos por nivel (1958–2023)
 
 | Nivel | Partidos con votos | Votos totales | Promedio | Mediana | Máximo |
 |---|---|---|---|---|---|
@@ -281,7 +305,7 @@ Tablas de apoyo referenciadas en el cuerpo del reporte.
 
 *Fuente: elaboración propia con datos de Torres, Barinas-Forero, Forero-Mesa, Sánchez & Tibavisco (2023).*
 
-### Tabla A8. Clusters del segundo nivel: tamaño y composición ideológica
+### Tabla A9. Clusters del segundo nivel: tamaño y composición ideológica
 
 | Cluster | n | % | Ideología no clasif. | Ejemplos |
 |---|---|---|---|---|
@@ -291,7 +315,7 @@ Tablas de apoyo referenciadas en el cuerpo del reporte.
 
 *Fuente: elaboración propia.*
 
-### Tabla A9. Votos históricos promedio por partido y nivel electoral, por cluster
+### Tabla A10. Votos históricos promedio por partido y nivel electoral, por cluster
 
 | Cluster | Alcaldía | Asamblea | Cámara | Concejo | Gobernación | Presidencia | Senado |
 |---|---|---|---|---|---|---|---|
@@ -301,7 +325,7 @@ Tablas de apoyo referenciadas en el cuerpo del reporte.
 
 *Fuente: elaboración propia.*
 
-### Tabla A10. Longevidad organizativa por cluster (segundo nivel)
+### Tabla A11. Longevidad organizativa por cluster (segundo nivel)
 
 | Cluster | n | Longevidad promedio (años) | Longevidad mediana (años) | Longevidad máxima (años) |
 |---|---|---|---|---|
@@ -311,7 +335,7 @@ Tablas de apoyo referenciadas en el cuerpo del reporte.
 
 *Fuente: elaboración propia con datos de temporalidad (Cabra-Ruíz et al., 2023).*
 
-### Tabla A11. Composición de clusters (segundo nivel) por periodo de fundación
+### Tabla A12. Composición de clusters (segundo nivel) por periodo de fundación
 
 | Período | n partidos nuevos | % Institucionalizado | % Nicho | % No institucionalizado |
 |---|---|---|---|---|
