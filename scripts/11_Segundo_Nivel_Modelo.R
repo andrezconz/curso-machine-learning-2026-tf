@@ -21,17 +21,17 @@ m <- kmeans(datos_ml2, centers = 3, nstart = 100, iter.max = 1000)
 
 # Las etiquetas se asignan por tamano del cluster (no por el ID arbitrario
 # que les da kmeans, que puede cambiar con la semilla): el grupo mas grande
-# es "Vehiculo marginal", el intermedio "Nicho/identitario", el mas
-# pequeno "Elite nacional" -- consistente con el patron sustantivo 86%/9%/5%
-# ya documentado en el reporte.
+# es "Partido no institucionalizado", el intermedio "Partido de nicho", el
+# mas pequeno "Partido institucionalizado" -- consistente con el patron
+# sustantivo 86%/9%/5% ya documentado en el reporte (seccion 5.4).
 tam <- table(m$cluster)
 orden <- order(-tam)
 mapa_etiquetas <- setNames(
-  c("Vehiculo marginal", "Nicho/identitario", "Elite nacional"),
+  c("Partido no institucionalizado", "Partido de nicho", "Partido institucionalizado"),
   names(tam)[orden]
 )
 base$cluster <- factor(mapa_etiquetas[as.character(m$cluster)],
-                        levels = c("Vehiculo marginal", "Nicho/identitario", "Elite nacional"))
+                        levels = c("Partido no institucionalizado", "Partido de nicho", "Partido institucionalizado"))
 
 fwrite(base, "resultados/nivel2_partidos_clusterizados.csv")
 
