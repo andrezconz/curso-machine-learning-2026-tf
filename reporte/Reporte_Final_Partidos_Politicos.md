@@ -1,6 +1,6 @@
-# ¿Maquinarias electorales o vehículos de garaje?
+# Más allá de la ideología
 
-### Perfiles de los partidos y movimientos políticos colombianos: una tipología basada en K-Means
+### Tipologías empíricas de los partidos y movimientos políticos colombianos
 
 **Aprendizaje de Máquinas y Políticas Públicas**
 Bogotá Summer School in Economics 2026 — Pontificia Universidad Javeriana
@@ -24,7 +24,7 @@ Con estos insumos se construyeron dos niveles de análisis: (1) K-Means sobre el
 
 ## 1. Pregunta de investigación
 
-¿Por qué la clasificación ideológica no logra explicar el éxito electoral de los partidos colombianos, y qué tipología alternativa —basada en institucionalización organizativa y nacionalización electoral— distingue a las organizaciones realmente consolidadas de los vehículos electorales efímeros?
+¿Qué tipologías empíricas de partidos políticos colombianos emergen del análisis conjunto de sus características organizativas, electorales e ideológicas, y qué revelan sobre la estructura del sistema de partidos?
 
 Es una pregunta descriptiva/exploratoria: no busca predecir una etiqueta ya conocida, sino descubrir agrupamientos latentes a partir de los atributos disponibles. El protocolo del curso admite explícitamente preguntas de este tipo ("¿qué grupos o patrones existen?"), y la ausencia de una variable de resultado observada hace que el aprendizaje no supervisado sea la estrategia natural.
 

@@ -1,4 +1,4 @@
-# Perfiles de los partidos políticos colombianos (1848–2022)
+# Más allá de la ideología: tipologías empíricas de los partidos políticos colombianos
 
 Trabajo final del curso **Aprendizaje de Máquinas y Políticas Públicas**
 (Bogotá Summer School in Economics 2026, Pontificia Universidad Javeriana).
@@ -14,11 +14,9 @@ Sánchez & Tibavisco (2023), *Resultados electorales de Colombia*
 
 ## Pregunta de investigación
 
-¿Por qué la clasificación ideológica no logra explicar el éxito electoral
-de los partidos colombianos, y qué tipología alternativa —basada en
-institucionalización organizativa y nacionalización electoral— distingue a
-las organizaciones realmente consolidadas de los vehículos electorales
-efímeros?
+¿Qué tipologías empíricas de partidos políticos colombianos emergen del
+análisis conjunto de sus características organizativas, electorales e
+ideológicas, y qué revelan sobre la estructura del sistema de partidos?
 
 Los perfiles se nombran e interpretan con un marco teórico que va más allá
 de la ideología: **institucionalización** (Panebianco, 1988; Mainwaring &
