@@ -5,6 +5,13 @@ Trabajo final del curso **Aprendizaje de Máquinas y Políticas Públicas**
 
 **Autor:** Andrez Felipe Guerrero Torres
 
+**Data:** Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez (2023), *Una
+caracterización histórica de los partidos políticos de Colombia:
+1958–2022* (Documento CEDE-Datos); Torres, Barinas-Forero, Forero-Mesa,
+Sánchez & Tibavisco (2023), *Resultados electorales de Colombia*
+(Documento CEDE-Datos). Centro de Estudios sobre Desarrollo Económico
+(CEDE), Universidad de los Andes.
+
 ## Pregunta de investigación
 
 ¿Qué perfiles o tipos de partidos y movimientos políticos han existido en
@@ -21,6 +28,8 @@ sectorial/identitaria.
 
 Ver el reporte completo en [`reporte/Reporte_Final_Partidos_Politicos.docx`](reporte/Reporte_Final_Partidos_Politicos.docx)
 (también disponible en [`reporte/Reporte_Final_Partidos_Politicos.md`](reporte/Reporte_Final_Partidos_Politicos.md)).
+El cuerpo del reporte se mantiene en 12 páginas o menos; todas las tablas de
+apoyo se movieron a una sección de **Anexos** al final del documento.
 
 ## Resumen de hallazgos
 
@@ -66,6 +75,13 @@ Requiere R (>= 4.x) con los paquetes: `tidyverse`, `readxl`, `janitor`,
 `skimr`, `caret`, `cluster`, `factoextra`, `corrplot`, `fpc`, `DescTools`,
 `broom`, `scales`, `reshape2`, `ggalluvial`, `data.table`, `haven`,
 `stringi`, `kernlab`, `mclust`, `tidytext`, `e1071`, `Rtsne`.
+
+Todos los modelos usan la semilla **20260706** (`set.seed(20260706)`). Con
+K-Means y `nstart=100` la partición converge a la misma solución
+sustantiva sin importar la semilla exacta; lo único que puede cambiar es
+qué número de cluster (1, 2, 3...) le toca a cada grupo, por lo que los
+scripts de nivel 2 (`11_Segundo_Nivel_Modelo.R`) asignan las etiquetas por
+**tamaño del cluster**, no por su ID arbitrario.
 
 Ejecutar desde la raíz del repositorio, en orden:
 
