@@ -1,6 +1,6 @@
 # Más allá de la ideología
 
-### Tipologías empíricas de los partidos y movimientos políticos colombianos
+### Tipologías empíricas de los partidos y movimientos políticos colombianos (1848–2023)
 
 **Aprendizaje de Máquinas y Políticas Públicas**
 Bogotá Summer School in Economics 2026 — Pontificia Universidad Javeriana
