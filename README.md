@@ -3,12 +3,21 @@
 Trabajo final del curso **Aprendizaje de Máquinas y Políticas Públicas**
 (Bogotá Summer School in Economics 2026, Pontificia Universidad Javeriana).
 
+**Autor:** Andrez Felipe Guerrero Torres
+
 ## Pregunta de investigación
 
 ¿Qué perfiles o tipos de partidos y movimientos políticos han existido en
 Colombia entre 1848 y 2022, en términos de su alcance electoral y su
 carácter ideológico, y qué proporción corresponde a vehículos electorales
 marginales frente a maquinarias partidistas consolidadas y multinivel?
+
+Los perfiles se nombran e interpretan con un marco teórico que va más allá
+de la ideología: **institucionalización** (Panebianco, 1988; Mainwaring &
+Scully, 1995), medida como longevidad organizativa; **nacionalización**
+electoral (Jones & Mainwaring, 2003), medida como alcance multinivel; y
+**partidos de nicho** (Meguid, 2005), para organizaciones de representación
+sectorial/identitaria.
 
 Ver el reporte completo en [`reporte/Reporte_Final_Partidos_Politicos.docx`](reporte/Reporte_Final_Partidos_Politicos.docx)
 (también disponible en [`reporte/Reporte_Final_Partidos_Politicos.md`](reporte/Reporte_Final_Partidos_Politicos.md)).
@@ -20,16 +29,22 @@ Ver el reporte completo en [`reporte/Reporte_Final_Partidos_Politicos.docx`](rep
   como maquinaria electoral multinivel; el resto opera en un solo nivel o
   de forma marginal.
 - **Nivel 2** (K-Means, k=3, sobre 2.155 partidos no-coalición, con votos
-  reales 1958–2023): el **4,8%** (103 partidos, entre ellos el Liberal, el
-  Conservador, Cambio Radical, Polo y Alianza Verde) concentra el grueso
-  del respaldo electoral real, corroborando el hallazgo del nivel 1 con
+  reales 1958–2023): el **4,8%** ("partido institucionalizado", 103
+  partidos, entre ellos el Liberal, el Conservador, Cambio Radical, Polo y
+  Alianza Verde) concentra el grueso del respaldo electoral real,
+  corroborando el hallazgo del nivel 1 con
   otra fuente de datos.
 - **Descubrimiento de datos**: el 58% de las 5.143 filas de `partidos.xlsx`
   no son partidos, sino coaliciones ad hoc de alcance local.
+- **Longevidad**: los partidos institucionalizados sobreviven en promedio
+  13,3 años (mediana 8) frente a una mediana de 0 años en los partidos
+  vehículo y de nicho — confirmando con una variable independiente del
+  clustering que la institucionalización, no la ideología, es el eje que
+  mejor distingue a los partidos colombianos.
 - **Evidencia temporal**: tras las reformas de 2003 y 2011 (pensadas para
   frenar la proliferación de partidos), el número de organizaciones nuevas
-  se disparó y la probabilidad de que un partido nuevo llegue a ser "élite
-  nacional" cayó de 14,4% a 1,2%.
+  se disparó y la probabilidad de que un partido nuevo llegue a estar
+  institucionalizado y nacionalizado cayó de 14,4% a 1,2%.
 
 ## Estructura del repositorio
 
@@ -66,6 +81,7 @@ Ejecutar desde la raíz del repositorio, en orden:
 | `10_Segundo_Nivel_Seleccion_K.R` | Selección de k para el segundo nivel |
 | `11_Segundo_Nivel_Modelo.R` | Modelo final del segundo nivel (k=3) |
 | `12_Analisis_Temporal.R` | Composición de clusters por periodo de reforma |
+| `13_Longevidad_Institucionalizacion.R` | Longevidad organizativa por cluster (prueba independiente de institucionalización) |
 
 `scripts/exploratorio/` contiene dos chequeos adicionales que **no** están en
 el reporte final: Kernel PCA / Spectral Clustering (robustez del nivel 1) y

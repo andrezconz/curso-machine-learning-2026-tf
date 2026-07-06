@@ -5,6 +5,7 @@
 **Aprendizaje de Máquinas y Políticas Públicas**
 Bogotá Summer School in Economics 2026 — Pontificia Universidad Javeriana
 Reporte de política · 6 de julio de 2026
+**Autor: Andrez Felipe Guerrero Torres**
 Base de datos: CEDE – Universidad de los Andes, clasificación de partidos políticos colombianos
 
 ---
@@ -29,11 +30,15 @@ Es una pregunta de naturaleza descriptiva/exploratoria: no se busca predecir una
 
 ## 2. Motivación
 
-El debate sobre la proliferación de partidos y movimientos políticos —popularmente conocidos como "partidos de garaje" o "microempresas electorales"— ha sido central en las reformas al régimen de partidos en Colombia (Acto Legislativo 01 de 2003, Ley 1475 de 2011 y las discusiones de reforma política de 2023–2025). La preocupación de fondo es que un número elevado de organizaciones obtienen o mantienen personería jurídica sin construir una presencia electoral real ni una identidad programática, lo que fragmenta la representación, dificulta la rendición de cuentas y encarece la administración electoral (tarjetones, financiación estatal, curules).
+La forma más habitual de describir a un partido colombiano es por su etiqueta ideológica (izquierda, derecha, centro). Pero los propios datos de este reporte muestran que esa etiqueta es un marcador débil e inconsistente: cerca del 40% de los partidos históricos no tiene ideología clasificable, y —de forma casi paradójica (sección 5.4)— los partidos electoralmente más exitosos son también los que con mayor frecuencia carecen de clasificación ideológica. Ideología, entonces, no es el eje más útil para tipificar a un partido colombiano.
 
-A la vez, la literatura sobre sistemas de partidos en Colombia (Pizarro León-Gómez, Gutierrez Sannín, entre otros) documenta una fragmentación ideológica creciente desde el colapso del bipartidismo tradicional en los años 2000, con partidos cada vez más personalistas y menos programáticos. Sin embargo, buena parte de ese diagnóstico se apoya en estudios de caso o en el análisis de las principales colectividades, sin cuantificar sistemáticamente, sobre el universo completo de partidos alguna vez registrados, cuántos operan efectivamente como maquinarias multinivel y cuántos son vehículos marginales.
+La literatura sobre sistemas de partidos ofrece dimensiones teóricas más robustas y, sobre todo, más observables en los datos disponibles. Panebianco (1988) y Mainwaring y Scully (1995) definen la institucionalización partidista como la capacidad de una organización de sobrevivir y reproducirse en el tiempo más allá de sus fundadores, en oposición a partidos personalistas construidos alrededor de un líder o una elección puntual; empíricamente, esa capacidad se aproxima con la longevidad organizativa. Jones y Mainwaring (2003) proponen la nacionalización electoral —la competencia sostenida de un partido en múltiples niveles y territorios, no solo en uno— como el complemento natural de la institucionalización. Y Meguid (2005) caracteriza a los partidos de nicho como aquellos que compiten sobre una dimensión estrecha y no económica (étnica, religiosa, sectorial) en vez de la disputa ideológica izquierda-derecha convencional. Estas tres nociones —institucionalización (longevidad), nacionalización (alcance multinivel) y nicho— son las que se usan en este reporte para nombrar e interpretar los perfiles encontrados, en lugar de depender de la clasificación ideológica registrada en la base.
 
-Este reporte busca llenar ese vacío: usando técnicas de agrupamiento no supervisado sobre la base histórica más completa disponible (CEDE–Uniandes, 5.143 partidos y movimientos entre 1848 y 2022), se construye una tipología empírica que permite cuantificar cuántas organizaciones corresponden a cada perfil. El hallazgo central —que menos del 2% de las organizaciones históricas se comporta como maquinaria electoral multinivel real, mientras el resto opera de forma marginal o local— aporta evidencia directa y cuantificada al diseño de umbrales de personería jurídica, reglas de coalición y fórmulas de financiación estatal por desempeño electoral.
+Esta relectura no es solo académica: el debate sobre la proliferación de partidos y movimientos políticos —popularmente conocidos como "partidos de garaje" o "microempresas electorales"— ha sido central en las reformas al régimen de partidos en Colombia (Acto Legislativo 01 de 2003, Ley 1475 de 2011 y las discusiones de reforma política de 2023–2025). La preocupación de fondo es que un número elevado de organizaciones obtienen o mantienen personería jurídica sin construir una presencia electoral real ni una organización duradera, lo que fragmenta la representación, dificulta la rendición de cuentas y encarece la administración electoral (tarjetones, financiación estatal, curules). Si la ideología no distingue bien a estos partidos, la institucionalización y la nacionalización sí podrían hacerlo, y de forma más directamente accionable para el diseño de reglas (umbrales, financiación).
+
+A la vez, la literatura sobre sistemas de partidos en Colombia (Pizarro León-Gómez, Gutiérrez Sánchez, entre otros) documenta una fragmentación creciente desde el colapso del bipartidismo tradicional en los años 2000, con partidos cada vez más personalistas y menos institucionalizados. Sin embargo, buena parte de ese diagnóstico se apoya en estudios de caso o en el análisis de las principales colectividades, sin cuantificar sistemáticamente, sobre el universo completo de partidos alguna vez registrados, cuántos son organizaciones institucionalizadas y nacionalizadas y cuántos son vehículos electorales efímeros.
+
+Este reporte busca llenar ese vacío: usando técnicas de agrupamiento no supervisado sobre la base histórica más completa disponible (CEDE–Uniandes, 5.143 partidos y movimientos entre 1848 y 2022), se construye una tipología empírica —anclada en institucionalización, nacionalización y nicho— que permite cuantificar cuántas organizaciones corresponden a cada perfil. El hallazgo central —que menos del 2% de las organizaciones históricas está institucionalizado y nacionalizado, mientras el resto opera de forma efímera o local— aporta evidencia directa y cuantificada al diseño de umbrales de personería jurídica, reglas de coalición y fórmulas de financiación estatal por desempeño electoral.
 
 ## 3. Estrategia empírica
 
@@ -138,25 +143,37 @@ Nótese que el modelo no se estimó solo con votos de senado: las siete variable
 
 | Cluster | n | % | Ideología no clasif. | Ejemplos |
 |---|---|---|---|---|
-| Vehículo marginal | 1,854 | 86.0% | 99.8% | microempresas electorales sin trayectoria |
-| Nicho / identitario | 198 | 9.2% | 0.0% | ONIC, movimientos cristianos, integración popular |
-| Élite nacional | 103 | 4.8% | 48.5% | Liberal, Conservador, Cambio Radical, Polo, Verde |
+| Partido vehículo | 1,854 | 86.0% | 99.8% | microempresas electorales sin trayectoria |
+| Partido de nicho | 198 | 9.2% | 0.0% | ONIC, movimientos cristianos, integración popular |
+| Partido institucionalizado | 103 | 4.8% | 48.5% | Liberal, Conservador, Cambio Radical, Polo, Verde |
 
 Votos históricos promedio por partido y nivel electoral (1958–2023), por cluster:
 
 | Cluster | Alcaldía | Asamblea | Cámara | Concejo | Gobernación | Presidencia | Senado |
 |---|---|---|---|---|---|---|---|
-| Vehículo marginal | 6,686 | 1,024 | 2,026 | 2,782 | 3,529 | 1,650 | 1,431 |
-| Nicho / identitario | 16,399 | 1,905 | 2,370 | 4,126 | 17,845 | 67,019 | 782 |
-| Élite nacional | 805,796 | 1,329,062 | 1,020,909 | 1,290,609 | 471,643 | 752,177 | 971,416 |
+| Partido vehículo | 6,686 | 1,024 | 2,026 | 2,782 | 3,529 | 1,650 | 1,431 |
+| Partido de nicho | 16,399 | 1,905 | 2,370 | 4,126 | 17,845 | 67,019 | 782 |
+| Partido institucionalizado | 805,796 | 1,329,062 | 1,020,909 | 1,290,609 | 471,643 | 752,177 | 971,416 |
 
-El patrón se sostiene en los siete niveles: el cluster "Élite nacional" supera al "Vehículo marginal" por un factor de 60 a 1.300 veces según el nivel, y no es simplemente un resultado impulsado por una sola elección (por ejemplo, solo presidencia o solo senado). El cluster "Nicho/identitario" se distingue por una presencia relativamente alta en gobernación y presidencia frente a una votación mínima en senado, coherente con partidos de representación de intereses específicos que rara vez compiten a nivel nacional.
+El patrón se sostiene en los siete niveles: el cluster "Partido institucionalizado" supera al "Partido vehículo" por un factor de 60 a 1.300 veces según el nivel, y no es simplemente un resultado impulsado por una sola elección (por ejemplo, solo presidencia o solo senado). El cluster "Partido de nicho" se distingue por una presencia relativamente alta en gobernación y presidencia frente a una votación mínima en senado, coherente con partidos de representación de intereses específicos que rara vez compiten a nivel nacional.
 
 ![Figura 3. Segundo nivel: clusters con votos reales.](../figuras/fig4_nivel2_pca.png)
 
 *Figura 3. Segundo nivel: clusters de partidos no-coalición usando votos electorales reales (1958-2023), proyectados sobre las dos primeras componentes principales.*
 
-El cluster "Élite nacional" (4,8% de los partidos no-coalición) incluye, de forma reconocible, al Partido Liberal Colombiano (43,6 millones de votos históricos acumulados al Senado), Partido Conservador Colombiano (30,5 millones), Cambio Radical, Polo Democrático Alternativo, Alianza Verde, Nuevo Liberalismo y Opción Ciudadana, entre otros. Este resultado, obtenido con la magnitud real del respaldo electoral y restringido a partidos genuinos (sin las coaliciones ad hoc), corrobora con otra fuente de datos el hallazgo central de la sección 6: una fracción muy pequeña de las organizaciones políticas colombianas concentra la enorme mayoría del músculo electoral real del país.
+El cluster "Partido institucionalizado" (4,8% de los partidos no-coalición) incluye, de forma reconocible, al Partido Liberal Colombiano (43,6 millones de votos históricos acumulados al Senado), Partido Conservador Colombiano (30,5 millones), Cambio Radical, Polo Democrático Alternativo, Alianza Verde, Nuevo Liberalismo y Opción Ciudadana, entre otros. Este resultado, obtenido con la magnitud real del respaldo electoral y restringido a partidos genuinos (sin las coaliciones ad hoc), corrobora con otra fuente de datos el hallazgo central de la sección 6: una fracción muy pequeña de las organizaciones políticas colombianas concentra la enorme mayoría del músculo electoral real del país.
+
+### 5.5 Longevidad organizativa: la institucionalización puesta a prueba
+
+Si la institucionalización se define, siguiendo a Panebianco (1988) y Mainwaring y Scully (1995), como la capacidad de una organización de sobrevivir en el tiempo más allá de su fundación, entonces la longevidad de cada partido (calculada a partir del campo temporalidad, como años entre su fundación y su último registro) ofrece una prueba directa —independiente del ejercicio de clustering— de si los nombres asignados a los tres perfiles del segundo nivel son sustantivamente adecuados.
+
+| Cluster | n | Longevidad promedio (años) | Longevidad mediana (años) | Longevidad máxima (años) |
+|---|---|---|---|---|
+| Partido vehículo | 1,854 | 0.5 | 0 | 43 |
+| Partido de nicho | 198 | 0.8 | 0 | 25 |
+| Partido institucionalizado | 103 | 13.3 | 8 | 174 |
+
+El contraste es contundente: la mitad de los partidos vehículo y de nicho desaparecen en el mismo año en que se registran (longevidad mediana = 0), mientras que los partidos institucionalizados sobreviven, en promedio, 13,3 años —con el Partido Liberal y el Partido Conservador, fundados en 1848 y 1849 y aún vigentes en 2022, marcando el máximo de 174 años—. Esta brecha de longevidad, obtenida con una variable que no participó en el clustering, confirma empíricamente que institucionalización (más que ideología) es el eje que mejor distingue a los partidos colombianos, y respalda usar esa noción, en vez de una etiqueta puramente descriptiva, para nombrar los perfiles de este reporte.
 
 ## 6. Reporte de política
 
@@ -169,7 +186,7 @@ El modelo identifica cuatro perfiles de partidos y movimientos políticos, con i
 - **Cluster 3 — "Partidos ideológicos de espectro amplio"** (21.3%, n=1.095): totalmente clasificados ideológicamente (30.0% izquierda, 65.8% categoría intermedia), con alcance local moderado (56.4% en alcaldía) y participación marginal en cargos nacionales.
 - **Cluster 4 — "Maquinarias electorales multinivel"** (1.8%, n=93): el grupo más pequeño y el más determinante. Participa en todos los niveles muy por encima del promedio — 67.7% en presidencia, 50.5% en senado, 55.9% en cámara, 50.5% en asamblea, 48.4% en concejo y 32.3% en gobernación—, pero, paradójicamente, el 66.7% de estos partidos no tiene una ideología clasificable. Es decir, los partidos con mayor éxito y alcance electoral multinivel tienden a ser los menos programáticos, consistente con el diagnóstico de un sistema de partidos más personalista/clientélico que doctrinario.
 
-El hallazgo central para política pública es cuantitativo: de las 5.143 organizaciones políticas registradas históricamente en Colombia, solo 93 (1.8%) funcionan como maquinarias electorales multinivel; el 98.2% restante opera en un solo nivel de gobierno o de forma marginal. El análisis de segundo nivel (sección 5.4), que usa votos reales en vez de participación binaria y excluye las coaliciones ad hoc, corrobora este patrón con otra fuente de datos: solo el 4,8% de los partidos genuinos (no-coalición) —el cluster "Élite nacional", que incluye al Liberal, Conservador, Cambio Radical, Polo y Alianza Verde— concentra el grueso del respaldo electoral real, mientras el 86% son vehículos con votación marginal.
+El hallazgo central para política pública es cuantitativo: de las 5.143 organizaciones políticas registradas históricamente en Colombia, solo 93 (1.8%) funcionan como maquinarias electorales multinivel; el 98.2% restante opera en un solo nivel de gobierno o de forma marginal. El análisis de segundo nivel (sección 5.4), que usa votos reales en vez de participación binaria y excluye las coaliciones ad hoc, corrobora este patrón con otra fuente de datos: solo el 4,8% de los partidos genuinos (no-coalición) —el cluster "Partido institucionalizado", que incluye al Liberal, Conservador, Cambio Radical, Polo y Alianza Verde— concentra el grueso del respaldo electoral real, mientras el 86% son vehículos con votación marginal.
 
 ### 6.2 Qué significa para la política pública
 
@@ -186,14 +203,14 @@ Se recomienda usar esta tipología como insumo descriptivo para el diseño de re
 
 Usando el año de fundación de cada partido (variable temporalidad), se comparó la composición de los clusters del segundo nivel (sección 5.4) entre partidos no-coalición fundados en cuatro periodos delimitados por los principales hitos de la reforma al régimen de partidos: antes de la Constitución de 1991, 1991–2003, 2003–2011 (tras el Acto Legislativo 01 de 2003, que introdujo el umbral electoral) y 2011–2023 (tras la Ley 1475 de 2011, que endureció los requisitos de personería jurídica).
 
-| Período | n partidos nuevos | % Élite nacional | % Nicho | % Vehículo marginal |
+| Período | n partidos nuevos | % Institucionalizado | % Nicho | % Vehículo |
 |---|---|---|---|---|
 | Antes de 1991 | 279 | 10.0% | 2.2% | 87.8% |
 | 1991–2003 (Const. 91) | 354 | 14.4% | 5.1% | 80.5% |
 | 2003–2011 (Acto Legislativo 01/2003) | 395 | 2.8% | 7.1% | 90.1% |
 | 2011–2023 (Ley 1475/2011) | 1,097 | 1.2% | 13.1% | 85.7% |
 
-El patrón es contrario al objetivo declarado de las reformas: el número de partidos nuevos se disparó después de cada reforma (de 395 en 2003–2011 a 1.097 en 2011–2023, un periodo más corto), mientras la probabilidad de que un partido nuevo alcance el nivel "Élite nacional" cayó de 14,4% (1991–2003) a apenas 1,2% (2011–2023). En otras palabras, ni el umbral de 2003 ni la Ley 1475 de 2011 frenaron la creación de vehículos electorales marginales; si acaso, coincidieron con una aceleración de su proliferación, mientras que alcanzar peso electoral real se volvió progresivamente más difícil para los partidos nuevos frente a la ventaja consolidada de las organizaciones históricas (Liberal, Conservador y similares, ya asentadas desde antes de estas reformas).
+El patrón es contrario al objetivo declarado de las reformas: el número de partidos nuevos se disparó después de cada reforma (de 395 en 2003–2011 a 1.097 en 2011–2023, un periodo más corto), mientras la probabilidad de que un partido nuevo alcance el nivel "Partido institucionalizado" cayó de 14,4% (1991–2003) a apenas 1,2% (2011–2023). En otras palabras, ni el umbral de 2003 ni la Ley 1475 de 2011 frenaron la creación de vehículos electorales marginales; si acaso, coincidieron con una aceleración de su proliferación, mientras que alcanzar peso electoral real se volvió progresivamente más difícil para los partidos nuevos frente a la ventaja consolidada de las organizaciones históricas (Liberal, Conservador y similares, ya asentadas desde antes de estas reformas).
 
 Esto sugiere que los umbrales basados en votación de una sola elección no han sido la herramienta adecuada para contener la proliferación de vehículos electorales, y refuerza la recomendación de la sección 6.2 de exigir desempeño multinivel sostenido, en lugar de un umbral de votación puntual, como criterio de conservación de personería jurídica.
 
@@ -215,7 +232,16 @@ Ambas correcciones cambiaron de forma material los resultados (por ejemplo, la V
 - **Agregación temporal**: se agrupan partidos de 1848 a 2022 sin distinguir el marco institucional vigente en cada periodo (por ejemplo, el régimen electoral cambió sustancialmente con la Constitución de 1991 y la reforma política de 2003). Parte de la señal capturada por los clusters puede reflejar la época de fundación más que un tipo de partido invariante en el tiempo.
 - **Calidad y representatividad de la clasificación ideológica**: la variable ideología se construye a partir de la revisión de estatutos por parte de investigadores del CEDE, lo cual introduce un componente de juicio interpretativo; además, cerca del 40% de los partidos no tiene ideología clasificable, lo que limita el detalle programático disponible para una fracción importante de la muestra.
 - **Generalización**: los resultados describen el universo histórico de organizaciones alguna vez registradas, no necesariamente el conjunto de partidos activos hoy; el peso relativo de cada perfil en la oferta electoral vigente puede diferir del histórico agregado.
-- **Cobertura del cruce con votos reales (sección 5.4)**: el emparejamiento de nombres entre los archivos electorales y partidos.xlsx capturó el 80,6% de los votos históricos no-coalición; el 19,4% restante (sobre todo variantes con eslóganes propios) queda sin votos registrados, lo que puede subestimar levemente el peso electoral de algunos partidos en el cluster "Élite nacional" o "Nicho". Además, las 2.988 filas de coaliciones ad hoc (58% de la base) quedaron fuera de este análisis por no ser atribuibles a un partido individual sin una regla de reparto arbitraria.
+- **Cobertura del cruce con votos reales (sección 5.4)**: el emparejamiento de nombres entre los archivos electorales y partidos.xlsx capturó el 80,6% de los votos históricos no-coalición; el 19,4% restante (sobre todo variantes con eslóganes propios) queda sin votos registrados, lo que puede subestimar levemente el peso electoral de algunos partidos en el cluster "Partido institucionalizado" o "Nicho". Además, las 2.988 filas de coaliciones ad hoc (58% de la base) quedaron fuera de este análisis por no ser atribuibles a un partido individual sin una regla de reparto arbitraria.
 - **Cobertura temporal de las coaliciones ad hoc (sección 6.3)**: al desglosar por periodo de fundación, el registro muestra 0% de coaliciones antes de 1991 y en 2003–2011, frente a 70% y 66% en 1991–2003 y 2011–2023 respectivamente. Este patrón probablemente refleja que el catálogo de coaliciones ad hoc solo se documentó sistemáticamente para ciertos ciclos electorales de concejo/asamblea (2011, 2015, 2019, 2023), no que las coaliciones locales no existieran en los demás periodos; por eso el análisis temporal de la sección 6.3 se restringe a los partidos no-coalición, donde la cobertura es más pareja entre periodos.
 - **Sensibilidad al método de agrupamiento**: como chequeo de robustez se recalcularon los grupos con Kernel PCA (RBF) y Spectral Clustering sobre una muestra de 2.000 partidos. El acuerdo con K-Means fue alto pero no total (índice de Rand ajustado = 0,71): Spectral Clustering subdivide el bloque de partidos sin ideología clasificada en dos subgrupos más finos, pero no logra aislar como grupo propio el 1,8% de "maquinarias electorales multinivel" que sí identifica K-Means — esos partidos, al ser minoritarios y dispersos en un espacio dummy de alta dimensión, no forman un vecindario suficientemente denso bajo un kernel RBF/de escalamiento local. Esto sugiere que el hallazgo de una élite electoral multinivel es sensible al método de agrupamiento elegido y debe interpretarse como un patrón robusto pero no como una frontera exacta entre grupos.
 - **Consideraciones éticas**: clasificar automáticamente partidos como "vehículos marginales" podría malinterpretarse como un juicio de legitimidad política. Esta tipología debe usarse como insumo descriptivo para el diseño de reglas generales (umbrales, financiación), y no como criterio automático para negar o cancelar personería jurídica a organizaciones específicas, decisión que debe basarse en el debido proceso legal vigente.
+
+## Referencias
+
+- Jones, M. P., & Mainwaring, S. (2003). The nationalization of parties and party systems: An empirical measure and an application to the Americas. *Party Politics*, 9(2), 139–166.
+- Mainwaring, S., & Scully, T. R. (Eds.). (1995). *Building Democratic Institutions: Party Systems in Latin America*. Stanford University Press.
+- Meguid, B. M. (2005). Competition between unequals: The role of mainstream party strategy in niche party success. *American Political Science Review*, 99(3), 347–359.
+- Panebianco, A. (1988). *Political Parties: Organization and Power*. Cambridge University Press.
+- Pizarro Leongómez, E. (2006). Giants with feet of clay: political parties in Colombia. In *Party Politics in the Andes*. Rowman & Littlefield.
+- CEDE, Universidad de los Andes. Clasificación de partidos y movimientos políticos colombianos (1848–2022); Registraduría Nacional del Estado Civil / CEDE, resultados electorales históricos (1958–2023).
