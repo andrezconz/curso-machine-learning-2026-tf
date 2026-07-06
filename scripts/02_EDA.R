@@ -1,6 +1,18 @@
 ###############################################################
 # SCRIPT 2
 # ANALISIS EXPLORATORIO DE DATOS (EDA)
+#
+# PROPOSITO METODOLOGICO
+# Antes de tocar una sola variable hay que entender su forma:
+# dimension del problema, tipos de dato, y sobre todo el patron de
+# valores faltantes. Este ultimo punto es el mas critico para el
+# resto del pipeline: aqui se detecta que las variables de texto
+# libre (justificaciones, fuentes) tienen 73%-100% de faltantes
+# genuinos, mientras que gradonac y grupo_representativo_1/2 NO
+# tienen NA de tipo faltante-real sino codigos centinela (98/99)
+# que se manejan de forma especial en el script 3. Sin este
+# diagnostico previo, seria facil tratar por error un codigo
+# centinela como si fuera un dato perdido cualquiera.
 ###############################################################
 
 ###############################################################

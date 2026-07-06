@@ -4,13 +4,24 @@
 #
 # Tema:
 # Identificación de perfiles de partidos políticos colombianos
-# mediante K-Means
+# mediante K-Means (aprendizaje no supervisado)
 #
 # Base:
-# CEDE - Universidad de los Andes
+# CEDE - Universidad de los Andes (Cabra-Ruíz, Torres, Wills-Otero
+# & Castilla-Gutiérrez, 2023)
 #
 # Autor:
+# Andrez Felipe Guerrero Torres
 #
+# SCRIPT 1 - PROPOSITO METODOLOGICO
+# Este script es el punto de entrada del pipeline: carga las
+# librerías necesarias e importa la base cruda tal como llega de
+# la fuente, sin ninguna transformación. La razón de aislar este
+# paso es la reproducibilidad: cualquier persona que corra el
+# proyecto desde cero debe partir exactamente del mismo estado
+# (mismos paquetes, mismos datos crudos) antes de que empiecen las
+# decisiones de preprocesamiento (script 3), que son las que
+# realmente pueden introducir sesgos si no se auditan con cuidado.
 ###############################################################
 
 rm(list = ls())
