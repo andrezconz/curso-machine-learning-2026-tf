@@ -1,6 +1,26 @@
 ###############################################################
 # SCRIPT 3
 # PREPROCESAMIENTO
+#
+# PROPOSITO METODOLOGICO
+# Convierte las variables categóricas crudas en la matriz numérica
+# que necesita K-Means (que solo entiende distancias entre
+# vectores de números). Dos decisiones aquí son las más delicadas
+# de todo el proyecto, y ambas se auditaron y corrigieron durante
+# la revisión de este trabajo (ver sección 7 del reporte):
+#   1) Los códigos 98/99 (que en algunas variables cubren hasta
+#      98.6% de los casos) se tratan como categorías propias, no
+#      se recodifican a NA ni se imputan con la moda -- imputar
+#      fabricaría una variable casi constante que dominaría
+#      artificialmente la distancia euclídea.
+#   2) La matriz de diseño se construye CON intercepto y luego se
+#      descarta, para que todas las variables reciban la misma
+#      codificación de referencia (evita que la primera variable
+#      del data frame reciba, por un efecto conocido de R,
+#      codificación de rango completo y quede con el doble de peso).
+# La estandarización final (media 0, desviación 1) es indispensable
+# porque K-Means usa distancia euclídea: sin ella, una variable con
+# más categorías dominaría solo por escala, no por relevancia.
 ###############################################################
 
 library(tidyverse)
