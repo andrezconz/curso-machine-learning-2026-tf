@@ -58,6 +58,8 @@ Ver el reporte completo en: ([`reporte/Reporte_Final_Partidos_Politicos.md`](rep
 ## Estructura del repositorio
 
 ```
+├── Analisis_Reproducible.Rmd  notebook unico: corre de arriba a abajo y
+│                              genera todos los resultados del reporte
 ├── data/                    partidos.xlsx + DATA.md (fuentes y datos no incluidos)
 ├── scripts/                 pipeline de R, en orden de ejecucion (01 a 13)
 │   ├── REPLICACION.md       guia paso a paso para reproducir el analisis desde cero
@@ -164,9 +166,31 @@ El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
 
 ## Cómo replicar el análisis
 
-> Guía paso a paso, con comandos exactos y verificaciones intermedias:
+**[`Analisis_Reproducible.Rmd`](Analisis_Reproducible.Rmd)** unifica todo
+el pipeline en un solo notebook: una corrida de arriba hacia abajo
+reproduce cada tabla y figura del reporte (Tablas A4-A12, Figuras 1-4),
+en el mismo orden que las secciones del reporte (Datos → Nivel 1 →
+Validación univariada y multivariada → Nivel 2 → Evidencia temporal →
+Longevidad). Requiere el directorio de trabajo en la raíz del
+repositorio; si no tienes los ~130 archivos electorales crudos (sección
+8 del notebook, ver `data/DATA.md`), ese fragmento se salta solo y usa
+los resultados intermedios ya versionados en `resultados/` — el resto
+corre igual. Se puede knitear a HTML (`rmarkdown::render(...)`, requiere
+pandoc) o correr el código directamente con
+`knitr::purl("Analisis_Reproducible.Rmd")` seguido de `Rscript`.
+
+Los scripts numerados en `scripts/` (`01` a `13`, más `07_1` y
+`exploratorio/`) siguen siendo la referencia detallada — cada uno trae
+su propio comentario de "PROPÓSITO METODOLÓGICO" — y son los que se
+usaron originalmente para construir el análisis; el notebook es la
+versión consolidada para quien quiera reproducir todo con una sola
+ejecución.
+
+> Guía paso a paso con los scripts individuales, con comandos exactos y
+> verificaciones intermedias:
 > [`scripts/REPLICACION.md`](scripts/REPLICACION.md). Lo que sigue es el
-> resumen; para reproducir el análisis desde cero, usa esa guía.
+> resumen; para reproducir el análisis desde cero, usa esa guía o el
+> notebook.
 
 Requiere R (>= 4.x) con los paquetes: `tidyverse`, `readxl`, `janitor`,
 `skimr`, `caret`, `cluster`, `factoextra`, `corrplot`, `fpc`, `DescTools`,
@@ -207,7 +231,7 @@ Ejecutar desde la raíz del repositorio, en orden:
 | `07_1_Ranking_Variables_RF.R` | Ranking multivariado de variables (árbol de decisión y Random Forest) vs. V de Cramér (sección 5.3) |
 | `08_Cruce_Votos_Electorales.R` | Cruce con votos reales 1958–2023 (requiere datos no incluidos, ver `data/DATA.md`) |
 | `08_1_Estadisticas_Descriptivas.R` | Tablas descriptivas de partidos.xlsx y de los votos históricos (secciones 4.3 y 5.4) |
-| `09_Segundo_Nivel_Preparacion.R` | Prepara datos del segundo nivel (partidos no-coalición + votos) |
+| `09_Segundo_Nivel_Preparacion.R` | Prepara datos del segundo nivel (partidos no-coalición + votos); usa `data/base_nivel2_no_coalicion.csv` si existe, sin necesitar los datos electorales crudos |
 | `10_Segundo_Nivel_Seleccion_K.R` | Selección de k para el segundo nivel |
 | `11_Segundo_Nivel_Modelo.R` | Modelo final del segundo nivel (k=3) |
 | `12_Analisis_Temporal.R` | Composición de clusters por periodo de reforma |

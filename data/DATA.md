@@ -16,6 +16,17 @@
   fuentes usadas para construirlas.
 - **`clasificacion_partidos_v1.txt`** — Misma base en formato texto delimitado por
   tabulaciones (usada solo como referencia; los scripts leen `partidos.xlsx`).
+- **`base_nivel2_no_coalicion.csv`** — Los 2.155 partidos no-coalición del
+  segundo nivel de análisis (sección 5.4 del reporte), ya con los votos
+  electorales por nivel (1958–2023) unidos a las variables categóricas de
+  `partidos.xlsx`. Es exactamente el `data.frame` que produce
+  `scripts/09_Segundo_Nivel_Preparacion.R` (35 variables, sin la
+  codificación dummy todavía), copiado aquí para que se pueda continuar
+  el análisis del nivel 2 (selección de k, modelo K-Means) sin tener que
+  descargar y procesar primero los ~130 archivos electorales crudos
+  (ver sección siguiente). Se regenera exactamente igual corriendo
+  `08_Cruce_Votos_Electorales.R` y `09_Segundo_Nivel_Preparacion.R` con
+  los datos electorales completos.
 
 ## NO incluidos (por tamaño): resultados electorales 1958–2023
 

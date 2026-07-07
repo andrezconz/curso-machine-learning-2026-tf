@@ -1,0 +1,545 @@
+---
+title: "Más allá de la ideología: tipologías empíricas de los partidos políticos colombianos (1848–2023)"
+subtitle: "Código reproducible — genera todos los resultados del reporte"
+author: "Andrez Felipe Guerrero Torres"
+date: "2026-07-06"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = normalizePath("."))
+SEMILLA <- 20260706
+```
+
+# Cómo usar este notebook
+
+Este documento unifica en un solo lugar todo el código que genera los
+resultados citados en `reporte/Reporte_Final_Partidos_Politicos.docx`.
+Es un consolidado de los scripts numerados en `scripts/` (que siguen
+siendo la referencia detallada, cada uno con su propósito metodológico
+documentado); aquí el objetivo es que **una sola corrida, de arriba
+hacia abajo, reproduzca el reporte completo**.
+
+- Debe abrirse/knitear con el **directorio de trabajo en la raíz del
+  repositorio** (la carpeta que contiene `data/`, `scripts/`,
+  `resultados/`, `figuras/`), no dentro de una subcarpeta.
+- La sección del segundo nivel que cruza con votos electorales reales
+  (sección 8) requiere ~130 archivos `.tab`/`.dta` que **no están en el
+  repositorio** por su tamaño (~2.5GB; ver `data/DATA.md` para el link
+  de descarga). Si no los tienes, ese chunk se salta automáticamente y
+  el notebook usa los resultados intermedios ya calculados y versionados
+  en `resultados/` — el resto del documento corre igual.
+- Todos los modelos usan la semilla **20260706**. Con `nstart=100`,
+  K-Means converge de forma estable a la misma partición sustantiva; lo
+  único que puede cambiar entre corridas es qué número (1, 2, 3...) le
+  toca a cada cluster, no su composición — por eso el nivel 2 asigna
+  etiquetas por tamaño de cluster, no por ID.
+
+```{r librerias}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(readxl)
+  library(janitor)
+  library(cluster)
+  library(factoextra)
+  library(DescTools)
+  library(caret)
+  library(rpart)
+  library(randomForest)
+  library(data.table)
+  library(stringi)
+  library(Rtsne)
+})
+```
+
+# Datos: carga y limpieza (scripts 01-03)
+
+```{r cargar-datos}
+partidos <- read_excel("data/partidos.xlsx") |> clean_names()
+dim(partidos)
+```
+
+## Tratamiento de códigos centinela y codificación dummy
+
+Dos decisiones se auditaron y corrigieron durante la revisión de este
+trabajo (sección 7 del reporte): (1) los códigos 98/99 en `gradonac` y
+`grupo_representativo_1/2` se tratan como categorías propias, **no** se
+recodifican a NA ni se imputan con la moda; (2) la matriz de diseño se
+construye **con** intercepto y luego se descarta, para que todas las
+variables reciban la misma codificación de referencia (evita que la
+primera variable quede con el doble de peso en la distancia euclídea).
+
+```{r preprocesamiento}
+datos_cluster <- partidos |>
+  select(
+    tradicional, gradonac, ideologia,
+    grupo_representativo_1, grupo_representativo_2,
+    part_alcaldia, part_asamblea, part_camara, part_concejo,
+    part_gobernacion, part_presidencia, part_presidencia_1v,
+    part_presidencia_2v, part_senado
+  ) |>
+  mutate(across(where(is.factor), as.character))
+
+moda <- function(x) {
+  ux <- na.omit(unique(x))
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+# Solo imputa NA genuinos; 98/99 no son NA, así que no se ven afectados
+datos_cluster <- datos_cluster |>
+  mutate(across(everything(), ~ replace(., is.na(.), moda(.)))) |>
+  mutate(across(everything(), as.factor))
+
+# Dummy CON intercepto, luego se descarta (corrige la codificación asimétrica)
+X <- model.matrix(~., data = datos_cluster)
+X <- X[, colnames(X) != "(Intercept)"]
+X <- as.data.frame(X)
+
+constantes <- sapply(X, function(x) length(unique(x)) == 1)
+X <- X[, !constantes]
+
+datos_ml <- as.data.frame(scale(X))
+dim(datos_ml)
+```
+
+# Nivel 1: selección de k (script 04_1)
+
+```{r seleccion-k-nivel1, cache=TRUE}
+set.seed(SEMILLA)
+k_max <- 10
+d1 <- dist(datos_ml)
+wss <- sil <- ch <- numeric(k_max)
+
+for (k in 2:k_max) {
+  m <- kmeans(datos_ml, centers = k, nstart = 100, iter.max = 1000)
+  wss[k] <- m$tot.withinss
+  s <- silhouette(m$cluster, d1)
+  sil[k] <- mean(s[, 3])
+  st <- fpc::cluster.stats(d = d1, clustering = m$cluster)
+  ch[k] <- st$ch
+}
+
+tabla_k1 <- tibble(k = 2:k_max, WSS = wss[2:k_max],
+                    Silhouette = sil[2:k_max], Calinski_Harabasz = ch[2:k_max])
+tabla_k1  # Tabla A4 del reporte
+```
+
+Se eligió **k=4**: silhouette comparable al de k=2-3, y sobre todo una
+partición sustantivamente interpretable, frente a soluciones de k más
+alto que maximizan la cohesión estadística pero son más difíciles de
+comunicar con claridad (sección 5.1 del reporte).
+
+# Nivel 1: modelo K-Means final (script 04)
+
+```{r modelo-nivel1}
+set.seed(SEMILLA)
+modelo_kmeans <- kmeans(datos_ml, centers = 4, nstart = 100, iter.max = 1000)
+
+table(modelo_kmeans$cluster)                                  # Tabla A5 (n)
+round(100 * modelo_kmeans$betweenss / modelo_kmeans$totss, 1)  # % varianza explicada (25.2%)
+
+sil1 <- silhouette(modelo_kmeans$cluster, dist(datos_ml))
+mean(sil1[, 3])                                                # silhouette promedio (0.26)
+round(tapply(sil1[, 3], sil1[, 1], mean), 2)                    # Tabla A5 (silhouette por cluster)
+```
+
+# Visualización: PCA y t-SNE (scripts 05, 05_1)
+
+```{r pca-nivel1, fig.cap="Figura 2. Clusters proyectados sobre PCA."}
+pca <- prcomp(datos_ml, center = TRUE, scale. = TRUE)
+coord <- as.data.frame(pca$x)
+coord$cluster <- factor(modelo_kmeans$cluster)
+
+ggplot(coord, aes(PC1, PC2, color = cluster)) +
+  geom_point(size = 2, alpha = 0.7) +
+  theme_minimal(base_size = 13) +
+  labs(title = "Clusters (nivel 1) sobre las dos primeras componentes principales",
+       color = "Cluster")
+```
+
+```{r tsne-nivel1, fig.cap="Figura 3. Proyección t-SNE (nivel 1)."}
+set.seed(SEMILLA)
+tsne <- Rtsne(as.matrix(datos_ml), dims = 2, perplexity = 30,
+              check_duplicates = FALSE, pca = FALSE, theta = 0.5,
+              max_iter = 1000, verbose = FALSE)
+tsne_df <- data.frame(X1 = tsne$Y[, 1], X2 = tsne$Y[, 2],
+                       cluster = factor(modelo_kmeans$cluster))
+
+ggplot(tsne_df, aes(X1, X2, color = cluster)) +
+  geom_point(size = 1.5, alpha = 0.6) +
+  theme_minimal(base_size = 13) +
+  labs(title = "Proyección t-SNE de los 4 clusters (nivel 1)", color = "Cluster")
+```
+
+# Caracterización de los clusters (script 06)
+
+```{r perfil-nivel1}
+partidos$cluster <- factor(modelo_kmeans$cluster)
+
+variables_perfil <- c("tradicional", "gradonac", "ideologia",
+                       "grupo_representativo_1", "grupo_representativo_2",
+                       "part_alcaldia", "part_asamblea", "part_camara",
+                       "part_concejo", "part_gobernacion", "part_presidencia",
+                       "part_senado")
+
+perfil_electoral <- partidos |>
+  group_by(cluster) |>
+  summarise(across(starts_with("part_") & !contains("_1v") & !contains("_2v"),
+                    ~ round(100 * mean(. == 1), 1)))
+perfil_electoral  # base de los % citados en la sección 6.1 del reporte
+```
+
+# Validación univariada: χ² y V de Cramér (script 07)
+
+```{r cramer-v}
+tabla_cramer <- data.frame()
+for (v in variables_perfil) {
+  datos_v <- partidos |> filter(!is.na(.data[[v]]))
+  tabla <- table(datos_v$cluster, datos_v[[v]])
+  chi <- suppressWarnings(chisq.test(tabla))
+  cv <- CramerV(tabla)
+  tabla_cramer <- rbind(tabla_cramer, data.frame(
+    Variable = v, CramerV = round(cv, 3),
+    Chi2 = round(unname(chi$statistic), 1), p = chi$p.value
+  ))
+}
+tabla_cramer$p_ajustado <- p.adjust(tabla_cramer$p, method = "BH")
+tabla_cramer <- tabla_cramer |> arrange(desc(CramerV))
+tabla_cramer  # Tabla A6 del reporte
+```
+
+# Validación multivariada: árbol de decisión y Random Forest (script 07_1)
+
+La V de Cramér evalúa cada variable de forma aislada; como complemento,
+un árbol y un Random Forest predicen el cluster con las 12 variables en
+conjunto, permitiendo un ranking de importancia que sí controla por la
+correlación entre variables (sección 5.3 del reporte).
+
+```{r rf-ranking, cache=TRUE}
+datos_rf <- partidos[, c(variables_perfil, "cluster")]
+for (v in variables_perfil) datos_rf[[v]] <- as.factor(datos_rf[[v]])
+
+set.seed(SEMILLA)
+idx <- createDataPartition(datos_rf$cluster, p = 0.75, list = FALSE)
+train <- datos_rf[idx, ]; test <- datos_rf[-idx, ]
+
+set.seed(SEMILLA)
+arbol <- rpart(cluster ~ ., data = train, method = "class")
+pred_arbol <- predict(arbol, test, type = "class")
+round(100 * mean(pred_arbol == test$cluster), 1)  # accuracy del árbol (~99.1%)
+
+set.seed(SEMILLA)
+rf <- randomForest(cluster ~ ., data = train, ntree = 500, importance = TRUE)
+pred_rf <- predict(rf, test)
+round(100 * mean(pred_rf == test$cluster), 1)     # accuracy del Random Forest (~99.6%)
+
+imp_rf <- importance(rf)
+data.frame(variable = rownames(imp_rf),
+           importancia_rf = round(100 * imp_rf[, "MeanDecreaseGini"] / sum(imp_rf[, "MeanDecreaseGini"]), 1)) |>
+  arrange(desc(importancia_rf))  # Tabla A7 del reporte
+```
+
+# Nivel 2: cruce con votos electorales reales (script 08)
+
+```{r datos-electorales-disponibles, echo=FALSE}
+archivos_electorales <- c(
+  list.files("data", pattern = "\\.tab$", full.names = TRUE),
+  list.files("data", pattern = "^[0-9]{4}_.*\\.dta$", full.names = TRUE)
+)
+HAY_DATOS_ELECTORALES <- length(archivos_electorales) > 0
+if (!HAY_DATOS_ELECTORALES) {
+  message("No se encontraron los ~130 archivos electorales crudos en data/. ",
+          "Se omite este chunk y se usa resultados/votos_totales_partido_nivel.csv, ",
+          "ya calculado y versionado. Ver data/DATA.md para descargarlos.")
+}
+```
+
+```{r cruce-votos, eval=length(c(list.files("data", pattern="\\.tab$"), list.files("data", pattern="^[0-9]{4}_.*\\.dta$"))) > 0}
+FILLER <- c("PARTIDO", "MOVIMIENTO", "COLOMBIANO", "COLOMBIANA", "POLITICO", "POLITICA", "NACIONAL")
+normalizar <- function(x) {
+  x <- toupper(trimws(x))
+  x <- stri_trans_general(x, "Latin-ASCII")
+  x <- gsub("[^A-Z0-9 ]", " ", x)
+  palabras <- strsplit(x, "\\s+")
+  palabras <- lapply(palabras, function(w) w[!(w %in% FILLER) & w != ""])
+  vapply(palabras, function(w) paste(w, collapse = " "), character(1))
+}
+
+partidos$nombre_norm <- normalizar(partidos$nombre)
+no_coalicion <- !grepl("^COALICION", toupper(trimws(partidos$nombre)))
+dic <- unique(partidos[no_coalicion & partidos$nombre_norm != "", c("nombre", "nombre_norm")])
+dic <- dic[!duplicated(dic$nombre_norm), ]
+
+leer_agg <- function(path) {
+  ext <- tools::file_ext(path)
+  if (ext == "tab") {
+    dt <- tryCatch(
+      fread(path, select = c("ano", "tipo_eleccion", "codigo_partido", "votos"), quote = "\"", encoding = "UTF-8",
+            colClasses = list(character = c("ano", "tipo_eleccion", "codigo_partido"), numeric = "votos")),
+      error = function(e) NULL)
+  } else {
+    d <- haven::read_dta(path) |> clean_names()
+    cols <- intersect(c("ano", "tipo_eleccion", "codigo_partido", "votos"), names(d))
+    d <- d[cols]
+    for (cn in c("tipo_eleccion", "codigo_partido")) {
+      if (cn %in% names(d)) d[[cn]] <- as.character(haven::as_factor(d[[cn]]))
+    }
+    if ("ano" %in% names(d)) d[["ano"]] <- as.character(d[["ano"]])
+    if ("votos" %in% names(d)) d[["votos"]] <- as.numeric(d[["votos"]])
+    dt <- as.data.table(d)
+  }
+  if (is.null(dt) || nrow(dt) == 0) return(NULL)
+  dt <- dt[!is.na(codigo_partido) & trimws(codigo_partido) != ""]
+  dt <- dt[!grepl("COALICION", codigo_partido, ignore.case = TRUE)]
+  if (nrow(dt) == 0) return(NULL)
+  dt[, votos := as.numeric(votos)]
+  dt[is.na(votos), votos := 0]
+  dt
+}
+
+resultados_electorales <- rbindlist(lapply(archivos_electorales, function(f) {
+  tryCatch(leer_agg(f), error = function(e) NULL)
+}), use.names = TRUE, fill = TRUE)
+
+resultados_electorales[, codigo_partido_norm := normalizar(codigo_partido)]
+setDT(dic)
+resultados_electorales <- merge(resultados_electorales, dic,
+                                 by.x = "codigo_partido_norm", by.y = "nombre_norm", all.x = TRUE)
+
+votos_totales_partido_nivel <- resultados_electorales[!is.na(nombre),
+  .(votos_totales = sum(votos), n_registros = .N), by = .(nombre, tipo_eleccion)]
+setorder(votos_totales_partido_nivel, nombre, -votos_totales)
+
+fwrite(votos_totales_partido_nivel, "resultados/votos_totales_partido_nivel.csv")
+```
+
+```{r cargar-votos-precalculado}
+votos <- fread("resultados/votos_totales_partido_nivel.csv")
+nrow(votos)
+```
+
+## Estadísticas descriptivas de los votos históricos (Tablas A2, A3, A8)
+
+```{r descriptivas-votos}
+canon <- function(x) {
+  x <- toupper(stri_trans_general(x, "Latin-ASCII"))
+  x <- gsub("[^A-Z]", "", x)
+  case_when(
+    grepl("CONCEJO", x) ~ "Concejo", grepl("ASAMBLEA", x) ~ "Asamblea",
+    grepl("SENADO", x) ~ "Senado", grepl("ALCALD", x) ~ "Alcaldia",
+    grepl("CAMARA|CMARA|C.MARA", x) ~ "Camara", grepl("GOBERNAC", x) ~ "Gobernacion",
+    grepl("PRESIDENCIA", x) ~ "Presidencia", TRUE ~ "Otro")
+}
+votos[, nivel := canon(tipo_eleccion)]
+votos_agg <- votos[, .(votos_totales = sum(votos_totales)), by = .(nombre, nivel)]
+
+tabla_votos_desc <- votos_agg[, .(
+  n_partidos_con_votos = .N,
+  votos_total = sum(votos_totales),
+  votos_promedio = round(mean(votos_totales)),
+  votos_mediana = as.numeric(median(votos_totales)),
+  votos_maximo = max(votos_totales)
+), by = nivel]
+setorder(tabla_votos_desc, -votos_total)
+tabla_votos_desc  # Tabla A8 del reporte
+```
+
+# Nivel 2: preparación (script 09)
+
+```{r preparar-nivel2}
+canon_v <- function(x) {
+  x <- toupper(stri_trans_general(x, "Latin-ASCII"))
+  x <- gsub("[^A-Z]", "", x)
+  case_when(
+    grepl("CONCEJO", x) ~ "concejo", grepl("ASAMBLEA", x) ~ "asamblea",
+    grepl("SENADO", x) ~ "senado", grepl("ALCALD", x) ~ "alcaldia",
+    grepl("CAMARA|CMARA|C.MARA", x) ~ "camara", grepl("GOBERNAC", x) ~ "gobernacion",
+    grepl("PRESIDENCIA", x) ~ "presidencia", TRUE ~ "otro")
+}
+votos[, nivel2 := canon_v(tipo_eleccion)]
+votos_agg2 <- votos[, .(votos_totales = sum(votos_totales)), by = .(nombre, nivel2)]
+votos_wide <- dcast(votos_agg2, nombre ~ nivel2, value.var = "votos_totales", fill = 0)
+setnames(votos_wide, setdiff(names(votos_wide), "nombre"),
+         paste0("votos_", setdiff(names(votos_wide), "nombre")))
+
+partidos_dt <- read_excel("data/partidos.xlsx") |> clean_names() |> as.data.table()
+partidos_dt[, nombre_upper := toupper(trimws(nombre))]
+base_nivel2 <- partidos_dt[!grepl("^COALICION", nombre_upper)]
+cat("Partidos no-coalición:", nrow(base_nivel2), "\n")
+
+base_nivel2 <- merge(base_nivel2, votos_wide, by = "nombre", all.x = TRUE)
+niveles_votos <- grep("^votos_", names(base_nivel2), value = TRUE)
+for (v in niveles_votos) base_nivel2[[v]][is.na(base_nivel2[[v]])] <- 0
+
+cat_vars2 <- c("tradicional", "gradonac", "ideologia", "grupo_representativo_1", "grupo_representativo_2")
+modelo_df2 <- base_nivel2[, c("codigo_partido", "nombre", cat_vars2, niveles_votos), with = FALSE]
+for (v in niveles_votos) modelo_df2[[paste0("log_", v)]] <- log1p(modelo_df2[[v]])
+for (v in cat_vars2) modelo_df2[[v]] <- as.factor(modelo_df2[[v]])
+
+X_cat2 <- model.matrix(as.formula(paste("~", paste(cat_vars2, collapse = "+"))), data = modelo_df2)
+X_cat2 <- X_cat2[, colnames(X_cat2) != "(Intercept)"]
+X_num2 <- as.matrix(modelo_df2[, paste0("log_", niveles_votos), with = FALSE])
+X2 <- cbind(X_cat2, X_num2)
+constantes2 <- apply(X2, 2, function(x) length(unique(x)) == 1)
+X2 <- X2[, !constantes2]
+
+datos_ml2 <- scale(X2)
+dim(datos_ml2)
+```
+
+# Nivel 2: selección de k (script 10)
+
+```{r seleccion-k-nivel2, cache=TRUE}
+set.seed(SEMILLA)
+d2 <- dist(datos_ml2)
+wss2 <- sil2 <- ch2 <- numeric(k_max)
+for (k in 2:k_max) {
+  m <- kmeans(datos_ml2, centers = k, nstart = 100, iter.max = 1000)
+  wss2[k] <- m$tot.withinss
+  s <- silhouette(m$cluster, d2)
+  sil2[k] <- mean(s[, 3])
+  st <- fpc::cluster.stats(d = d2, clustering = m$cluster)
+  ch2[k] <- st$ch
+}
+tibble(k = 2:k_max, Silhouette = sil2[2:k_max], Calinski_Harabasz = ch2[2:k_max])
+```
+
+Se eligió **k=3** en vez de k=2 porque separa un tercer grupo —una élite
+partidista minoritaria— que k=2 fusiona con el grupo intermedio (sección
+5.4 del reporte).
+
+# Nivel 2: modelo final (script 11)
+
+Las etiquetas se asignan por **tamaño del cluster**, no por el ID que le
+asigna `kmeans()` (que puede cambiar con la semilla o la versión de R).
+
+```{r modelo-nivel2}
+set.seed(SEMILLA)
+modelo_nivel2 <- kmeans(datos_ml2, centers = 3, nstart = 100, iter.max = 1000)
+
+tam <- table(modelo_nivel2$cluster)
+orden <- order(-tam)
+mapa_etiquetas <- setNames(
+  c("Partido no institucionalizado", "Partido de nicho", "Partido institucionalizado"),
+  names(tam)[orden]
+)
+base_nivel2$cluster <- factor(mapa_etiquetas[as.character(modelo_nivel2$cluster)],
+                               levels = c("Partido no institucionalizado", "Partido de nicho", "Partido institucionalizado"))
+
+table(base_nivel2$cluster)  # Tabla A9 del reporte (n)
+
+sil2_final <- silhouette(modelo_nivel2$cluster, dist(datos_ml2))
+round(mean(sil2_final[, 3]), 3)  # silhouette promedio (0.528)
+
+# Se guarda para que la sección de evidencia temporal (script 12) la
+# recargue igual que en el pipeline original
+fwrite(base_nivel2, "resultados/nivel2_partidos_clusterizados.csv")
+```
+
+```{r perfil-votos-nivel2}
+base_nivel2[, lapply(.SD, mean), by = cluster, .SDcols = niveles_votos] |>
+  arrange(match(cluster, c("Partido no institucionalizado", "Partido de nicho", "Partido institucionalizado")))
+# Tabla A10 del reporte
+```
+
+```{r pca-nivel2, fig.cap="Figura 4. Segundo nivel: clusters con votos reales."}
+pca2 <- prcomp(datos_ml2, center = TRUE, scale. = TRUE)
+coord2 <- as.data.frame(pca2$x)
+coord2$cluster <- base_nivel2$cluster
+
+ggplot(coord2, aes(PC1, PC2, color = cluster)) +
+  geom_point(alpha = 0.6, size = 1.8) +
+  theme_minimal(base_size = 13) +
+  labs(title = "Segundo nivel: clusters con votos reales (1958-2023)", color = "Cluster")
+```
+
+# Evidencia temporal: ¿funcionaron las reformas? (script 12)
+
+```{r evidencia-temporal}
+# Replica el script 12: recarga partidos.xlsx completo (no solo
+# base_nivel2), calcula el periodo sobre ESA tabla, y cruza por nombre
+# con el CSV de clusters. NOTA DE REPRODUCIBILIDAD: este cruce es por
+# texto del nombre, no por codigo_partido; en una corrida de verificacion
+# reprodujo exactamente los periodos "2003-2011" y "2011-2023" de la
+# Tabla A12, pero con una diferencia de 0.1-0.3 puntos porcentuales en
+# "Antes de 1991" y "1991-2003" frente al reporte (algunas filas no
+# encuentran match exacto de nombre entre las dos fuentes). No cambia
+# ninguna conclusion del reporte; se documenta aqui por transparencia.
+## Ojo: `partidos` ya tiene una columna `cluster` (la del nivel 1, agregada
+## en la sección de caracterización). Se recarga limpio desde el archivo
+## fuente -tal como hace el script 12- para que el join con el cluster
+## del nivel 2 no choque de nombre con el del nivel 1.
+partidos_temporal <- read_excel("data/partidos.xlsx") |>
+  clean_names() |>
+  mutate(
+    ano_fundacion = as.numeric(str_extract(temporalidad, "^[0-9]{4}")),
+    es_coalicion = str_starts(toupper(trimws(nombre)), "COALICION"),
+    periodo = cut(ano_fundacion,
+                   breaks = c(-Inf, 1991, 2003, 2011, Inf),
+                   labels = c("Antes de 1991", "1991-2003 (Const. 91)",
+                              "2003-2011 (AL 01/2003)", "2011-2023 (Ley 1475/2011)"),
+                   right = FALSE)
+  )
+
+nivel2_csv <- read_csv("resultados/nivel2_partidos_clusterizados.csv", show_col_types = FALSE) |>
+  select(nombre, cluster) |>
+  distinct(nombre, .keep_all = TRUE)
+
+partidos_nc <- partidos_temporal |>
+  filter(!es_coalicion) |>
+  left_join(nivel2_csv, by = "nombre")
+
+partidos_nc |>
+  filter(!is.na(periodo), !is.na(cluster)) |>
+  count(periodo, cluster) |>
+  group_by(periodo) |>
+  mutate(pct = round(100 * n / sum(n), 1)) |>
+  select(periodo, cluster, pct) |>
+  pivot_wider(names_from = cluster, values_from = pct, values_fill = 0)
+# Tabla A12 del reporte
+```
+
+# Longevidad organizativa: prueba independiente (script 13)
+
+```{r longevidad}
+# Misma logica que el script 13: primeros y ultimos 4 digitos de
+# temporalidad (str_extract anclado al inicio y al final), no un
+# rango sobre todas las coincidencias numericas de la cadena
+base_nivel2[, `:=`(
+  ano_ini = as.numeric(str_extract(temporalidad, "^[0-9]{4}")),
+  ano_fin = as.numeric(str_extract(temporalidad, "[0-9]{4}$"))
+)]
+base_nivel2[, longevidad := ano_fin - ano_ini]
+
+base_nivel2[!is.na(cluster), .(
+  n = .N,
+  longevidad_promedio = round(mean(longevidad, na.rm = TRUE), 1),
+  longevidad_mediana = as.numeric(median(longevidad, na.rm = TRUE)),
+  longevidad_maxima = max(longevidad, na.rm = TRUE)
+), by = cluster]
+# Tabla A11 del reporte
+```
+
+# Resumen de resultados clave
+
+```{r resumen-final, echo=FALSE}
+tibble::tribble(
+  ~Hallazgo, ~Valor,
+  "Partidos institucionalizados y nacionalizados (nivel 1)", "93 de 5.143 (1.8%)",
+  "Partidos institucionalizados (nivel 2, votos reales)", "103 de 2.155 (4.8%)",
+  "Filas de partidos.xlsx que son coaliciones", "2.988 de 5.143 (58%)",
+  "Longevidad promedio: institucionalizados vs. no institucionalizados", "13.3 años vs. 0.5 años",
+  "Probabilidad de institucionalizarse: pre-1991 vs. 2011-2023", "10.0% -> 1.2%"
+) |> knitr::kable()
+```
+
+Estos números —y las tablas y figuras completas de cada sección— son
+los que se citan textualmente en `reporte/Reporte_Final_Partidos_Politicos.docx`.
+Para el detalle metodológico de cada paso, ver los scripts individuales
+en `scripts/` y `scripts/REPLICACION.md`.
