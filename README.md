@@ -5,7 +5,7 @@ Trabajo final del curso **Aprendizaje de Máquinas y Políticas Públicas**
 
 **Autor:** Andrez Felipe Guerrero Torres
 
-**Data:** Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez (2023), *Una
+**Datos:** Cabra-Ruíz, Torres, Wills-Otero & Castilla-Gutiérrez (2023), *Una
 caracterización histórica de los partidos políticos de Colombia:
 1958–2022* (Documento CEDE-Datos); Torres, Barinas-Forero, Forero-Mesa,
 Sánchez & Tibavisco (2023), *Resultados electorales de Colombia*
@@ -14,22 +14,18 @@ Sánchez & Tibavisco (2023), *Resultados electorales de Colombia*
 
 ## Pregunta de investigación
 
-¿Qué grupos o patrones de partidos y movimientos políticos colombianos
-pueden identificarse mediante técnicas de aprendizaje no supervisado
-entre 1848 y 2023?
+¿Qué patrones de partidos y movimientos políticos colombianos 
+pueden identificarse mediante aprendizaje no supervisado 
+para el período 1848–2023?
 
-Los perfiles se nombran e interpretan con un marco teórico que va más allá
-de la ideología: **institucionalización** (Panebianco, 1988; Mainwaring &
+Los perfiles se nombran e interpretan con un marco conceptual: 
+**institucionalización** (Panebianco, 1988; Mainwaring &
 Scully, 1995), medida como longevidad organizativa; **nacionalización**
 electoral (Jones & Mainwaring, 2003), medida como alcance multinivel; y
 **partidos de nicho** (Meguid, 2005), para organizaciones de representación
 sectorial/identitaria.
 
-Ver el reporte completo en [`reporte/Reporte_Final_Partidos_Politicos.docx`](reporte/Reporte_Final_Partidos_Politicos.docx)
-(también disponible en [`reporte/Reporte_Final_Partidos_Politicos.md`](reporte/Reporte_Final_Partidos_Politicos.md)).
-Todas las tablas de apoyo se presentan en una sección de **Anexos** al
-final del documento, para no interrumpir el hilo argumentativo del cuerpo
-del reporte.
+Ver el reporte completo en: ([`reporte/Reporte_Final_Partidos_Politicos.md`](reporte/Reporte_Final_Partidos_Politicos.md)).
 
 ## Resumen de hallazgos
 
@@ -141,7 +137,7 @@ no entraron al reporte final (ver sección "Cómo correr el pipeline").
 
 El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
 
-1. **Pipeline base** (scripts 01–07): limpieza, codificación dummy, K-Means
+1. **Preparación de datos** (scripts 01–07): limpieza, codificación dummy, K-Means
    (k=4) sobre participación electoral binaria, y validación estadística
    (χ²/V de Cramér). Al auditar este pipeline se encontraron y corrigieron
    dos errores reales — una codificación dummy asimétrica que duplicaba el
@@ -165,12 +161,8 @@ El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
 4. **Evidencia temporal** (script 12): comparar clusters por periodo de
    reforma (1991, 2003, 2011) mostró que la proliferación de partidos no
    institucionalizados no bajó tras las reformas — se aceleró.
-5. **Chequeos de robustez** (`scripts/exploratorio/`): Kernel PCA/Spectral
-   Clustering y un Naive Bayes sobre el texto del nombre, documentados
-   aunque no entraron al reporte principal (el segundo, un resultado
-   negativo honesto).
 
-## Cómo correr el pipeline
+## Cómo replicar el análisis
 
 > Guía paso a paso, con comandos exactos y verificaciones intermedias:
 > [`scripts/REPLICACION.md`](scripts/REPLICACION.md). Lo que sigue es el
