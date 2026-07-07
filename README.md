@@ -281,16 +281,8 @@ errores en el pipeline original (ver sección 7 del reporte):
    99% de "no aplica/sin clasificar", que fabricaba una variable casi
    constante y distorsionaba el clustering.
 
-## Autor
+## Disposición
 
 Curso de Aprendizaje de Máquinas y Políticas Públicas, Bogotá Summer School
 in Economics 2026, Pontificia Universidad Javeriana.
 
-## Reconocimientos
-
-Este repositorio y el reporte que documenta se desarrollaron con el apoyo
-de **Claude (Claude Code, Anthropic)** como asistente de análisis: revisión
-y depuración del pipeline de R, ejecución de los modelos, redacción y
-edición del reporte, y organización de esta documentación. Cada decisión
-metodológica —de la elección de k a la corrección de los errores de la
-sección 7— fue evaluada y validada por el autor.
