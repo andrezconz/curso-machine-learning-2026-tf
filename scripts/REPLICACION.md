@@ -76,11 +76,14 @@ Los resultados electorales históricos de Colombia (1958–2023) pesan
 [DataHub Uniandes — Resultados electorales de Colombia](https://datahub.uniandes.edu.co/dataset.xhtml?persistentId=doi%3A10.71590%2FR2KLKI)
 y colócalos según las instrucciones de `data/DATA.md`.
 
-Si no quieres descargar esos datos, puedes saltarte el script `08` y
-seguir desde el `09` en adelante: el repositorio ya incluye los
-resultados intermedios curados en `resultados/` (`votos_totales_partido_nivel.csv`,
-`base_nivel2_partidos_no_coalicion.csv`, `datos_ml2.rds`), así que `09`
-en adelante corren igual sin necesidad de los ~130 archivos crudos.
+Si no quieres descargar esos datos, puedes saltarte el script `08`: el
+repositorio incluye `data/base_nivel2_no_coalicion.csv`, los 2.155
+partidos no-coalición del segundo nivel ya con los votos por nivel
+unidos (ver `data/DATA.md`). `09_Segundo_Nivel_Preparacion.R` detecta
+ese archivo automáticamente y lo usa en vez de reconstruirlo desde
+`resultados/votos_totales_partido_nivel.csv` y los archivos crudos, así
+que `09` en adelante corren igual sin necesidad de los ~130 archivos
+electorales.
 
 ### 2.2 Correr el pipeline del nivel 2
 
