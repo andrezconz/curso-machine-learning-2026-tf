@@ -257,9 +257,11 @@ el reporte — solo se conserva su resumen (`InferenciaClusters.csv`). Todos
 son 100% reproducibles corriendo los scripts; simplemente no aportaban a
 entender los hallazgos, así que no se versionan (ver `.gitignore`).
 
-Los datos electorales para reproducir los scripts 08–13 se descargan de:
-[DataHub Uniandes — Resultados electorales de Colombia](https://datahub.uniandes.edu.co/dataset.xhtml?persistentId=doi%3A10.71590%2FR2KLKI)
-(ver `data/DATA.md` para instrucciones completas).
+Los scripts `09` en adelante ya corren con `data/base_nivel2_no_coalicion.csv`
+(incluido), sin necesitar los datos electorales crudos. Si quieres
+reconstruir ese cruce desde cero (script `08`, ~130 archivos, ~2.5GB, no
+incluidos), ver la guía de descarga:
+[`data/DESCARGAR_DATOS_ELECTORALES.md`](data/DESCARGAR_DATOS_ELECTORALES.md).
 
 ### Nota sobre rutas con tildes
 

@@ -69,26 +69,22 @@ Si tu semilla y `nstart=100` están intactos, esto debe coincidir siempre
 
 ## 2. Nivel 2 — solo partidos no-coalición, con votos reales (scripts 08 a 13)
 
-### 2.1 Descargar los datos electorales (no incluidos en el repositorio)
+### 2.1 Sobre los datos electorales crudos: normalmente no hacen falta
 
-Los resultados electorales históricos de Colombia (1958–2023) pesan
-~2.5GB y no se versionan. Descárgalos de:
-[DataHub Uniandes — Resultados electorales de Colombia](https://datahub.uniandes.edu.co/dataset.xhtml?persistentId=doi%3A10.71590%2FR2KLKI)
-y colócalos según las instrucciones de `data/DATA.md`.
+El repositorio ya incluye `data/base_nivel2_no_coalicion.csv` (los 2.155
+partidos no-coalición del segundo nivel, con los votos por nivel ya
+unidos). `09_Segundo_Nivel_Preparacion.R` lo detecta automáticamente,
+así que puedes empezar directamente en el paso 2.2 sin descargar nada:
+salta el script `08` y sigue con `09` en adelante.
 
-Si no quieres descargar esos datos, puedes saltarte el script `08`: el
-repositorio incluye `data/base_nivel2_no_coalicion.csv`, los 2.155
-partidos no-coalición del segundo nivel ya con los votos por nivel
-unidos (ver `data/DATA.md`). `09_Segundo_Nivel_Preparacion.R` detecta
-ese archivo automáticamente y lo usa en vez de reconstruirlo desde
-`resultados/votos_totales_partido_nivel.csv` y los archivos crudos, así
-que `09` en adelante corren igual sin necesidad de los ~130 archivos
-electorales.
+Solo si quieres reconstruir ese cruce desde cero (auditar el script
+`08` con los ~130 archivos originales, ~2.5GB, no versionados), sigue la
+guía completa: [`data/DESCARGAR_DATOS_ELECTORALES.md`](../data/DESCARGAR_DATOS_ELECTORALES.md).
 
 ### 2.2 Correr el pipeline del nivel 2
 
 ```bash
-Rscript scripts/08_Cruce_Votos_Electorales.R      # requiere los datos del paso 2.1
+Rscript scripts/08_Cruce_Votos_Electorales.R      # opcional, ver 2.1 -- requiere los datos crudos
 Rscript scripts/08_1_Estadisticas_Descriptivas.R  # tablas descriptivas (secciones 4 y 5.4)
 Rscript scripts/09_Segundo_Nivel_Preparacion.R    # -> resultados/datos_ml2.rds
 Rscript scripts/10_Segundo_Nivel_Seleccion_K.R    # selección de k -> resultados/seleccion_k_nivel2.csv

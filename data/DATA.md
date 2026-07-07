@@ -32,28 +32,15 @@
 
 Los scripts `08_Cruce_Votos_Electorales.R` en adelante requieren los resultados
 electorales históricos de Colombia (Torres, Barinas-Forero, Forero-Mesa,
-Sánchez & Tibavisco, 2023, "Resultados electorales de Colombia", Documento
-CEDE-Datos) para:
+Sánchez & Tibavisco, 2023), ~130 archivos `.tab`/`.dta`, ~2,5 GB en total.
+No se incluyen en este repositorio por su tamaño, pero **tampoco hacen
+falta** para reproducir el análisis: `base_nivel2_no_coalicion.csv`
+(arriba) ya trae los votos unidos, así que los scripts `09` en adelante
+y el notebook `Analisis_Reproducible.Rmd` corren sin ellos.
 
-- Alcaldía, Asamblea Departamental, Concejo Municipal, Gobernación (elecciones territoriales)
-- Cámara de Representantes, Senado (elecciones legislativas)
-- Presidencia (primera y segunda vuelta)
-
-para el periodo 1958–2023 (~130 archivos `.tab`/`.dta`, candidato-municipio-elección,
-~2,5 GB en total). No se incluyen en este repositorio por su tamaño.
-
-**Descarga oficial:** [DataHub Uniandes — Resultados electorales de Colombia](https://datahub.uniandes.edu.co/dataset.xhtml?persistentId=doi%3A10.71590%2FR2KLKI)
-(DOI: 10.71590/R2KLKI).
-
-**Para reproducir el análisis de las secciones 5.4, 6.3 y los scripts 08–13:**
-
-1. Descargue los archivos electorales por año y tipo de elección del DataHub
-   enlazado arriba.
-2. Colóquelos en esta carpeta (`data/`) con el patrón de nombre
-   `AAAA_tipo_de_eleccion.tab` (o `.dta` para alcaldías), por ejemplo:
-   `2022_senado.tab`, `2019_alcaldia.dta`, `2018_camara.tab`.
-3. Cada archivo debe tener, como mínimo, las columnas `ano`, `tipo_eleccion`,
-   `codigo_partido` (nombre del partido, no un código numérico) y `votos`.
+Si igual quieres descargarlos y reconstruir el cruce desde cero (por
+ejemplo, para auditar el script `08`), ver la guía completa:
+[`DESCARGAR_DATOS_ELECTORALES.md`](DESCARGAR_DATOS_ELECTORALES.md).
 
 ## Nota sobre rutas con tildes (macOS / iCloud Drive)
 
