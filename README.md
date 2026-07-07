@@ -14,9 +14,9 @@ Sánchez & Tibavisco (2023), *Resultados electorales de Colombia*
 
 ## Pregunta de investigación
 
-¿Qué tipologías empíricas de partidos y movimientos políticos colombianos,
-entre 1848 y 2023, emergen del análisis conjunto de sus características
-organizativas, electorales e ideológicas?
+¿Qué grupos o patrones de partidos y movimientos políticos colombianos
+pueden identificarse mediante técnicas de aprendizaje no supervisado
+entre 1848 y 2023?
 
 Los perfiles se nombran e interpretan con un marco teórico que va más allá
 de la ideología: **institucionalización** (Panebianco, 1988; Mainwaring &
@@ -64,6 +64,7 @@ del reporte.
 ```
 ├── data/                    partidos.xlsx + DATA.md (fuentes y datos no incluidos)
 ├── scripts/                 pipeline de R, en orden de ejecucion (01 a 13)
+│   ├── REPLICACION.md       guia paso a paso para reproducir el analisis desde cero
 │   └── exploratorio/        chequeos que NO entraron al reporte final
 ├── resultados/              outputs curados (solo lo que se usa en el reporte)
 ├── figuras/                 graficos (PNG) usados en el reporte
@@ -170,6 +171,10 @@ El trabajo avanzó en capas, cada una motivada por lo que reveló la anterior:
    negativo honesto).
 
 ## Cómo correr el pipeline
+
+> Guía paso a paso, con comandos exactos y verificaciones intermedias:
+> [`scripts/REPLICACION.md`](scripts/REPLICACION.md). Lo que sigue es el
+> resumen; para reproducir el análisis desde cero, usa esa guía.
 
 Requiere R (>= 4.x) con los paquetes: `tidyverse`, `readxl`, `janitor`,
 `skimr`, `caret`, `cluster`, `factoextra`, `corrplot`, `fpc`, `DescTools`,
