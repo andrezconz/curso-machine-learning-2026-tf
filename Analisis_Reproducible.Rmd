@@ -29,12 +29,15 @@ hacia abajo, reproduzca el reporte completo**.
 - Debe abrirse/knitear con el **directorio de trabajo en la raíz del
   repositorio** (la carpeta que contiene `data/`, `scripts/`,
   `resultados/`, `figuras/`), no dentro de una subcarpeta.
-- La sección del segundo nivel que cruza con votos electorales reales
-  (sección 8) requiere ~130 archivos `.tab`/`.dta` que **no están en el
-  repositorio** por su tamaño (~2.5GB; ver `data/DATA.md` para el link
-  de descarga). Si no los tienes, ese chunk se salta automáticamente y
-  el notebook usa los resultados intermedios ya calculados y versionados
-  en `resultados/` — el resto del documento corre igual.
+- El notebook **no necesita los ~130 archivos electorales crudos**
+  (`.tab`/`.dta`, ~2.5GB, no incluidos en el repositorio): usa
+  directamente `resultados/votos_totales_partido_nivel.csv`, ya
+  calculado y versionado. El cruce de esos archivos crudos con
+  `partidos.xlsx` (script `08_Cruce_Votos_Electorales.R`) es un paso de
+  limpieza de datos aparte, documentado en
+  [`data/DESCARGAR_DATOS_ELECTORALES.md`](data/DESCARGAR_DATOS_ELECTORALES.md)
+  para quien quiera reconstruirlo desde cero; no hace falta para
+  reproducir el reporte.
 - Todos los modelos usan la semilla **20260706**. Con `nstart=100`,
   K-Means converge de forma estable a la misma partición sustantiva; lo
   único que puede cambiar entre corridas es qué número (1, 2, 3...) le
@@ -245,79 +248,21 @@ data.frame(variable = rownames(imp_rf),
   arrange(desc(importancia_rf))  # Tabla A7 del reporte
 ```
 
-# Nivel 2: cruce con votos electorales reales (script 08)
+# Nivel 2: votos electorales reales (script 08)
 
-```{r datos-electorales-disponibles, echo=FALSE}
-archivos_electorales <- c(
-  list.files("data", pattern = "\\.tab$", full.names = TRUE),
-  list.files("data", pattern = "^[0-9]{4}_.*\\.dta$", full.names = TRUE)
-)
-HAY_DATOS_ELECTORALES <- length(archivos_electorales) > 0
-if (!HAY_DATOS_ELECTORALES) {
-  message("No se encontraron los ~130 archivos electorales crudos en data/. ",
-          "Se omite este chunk y se usa resultados/votos_totales_partido_nivel.csv, ",
-          "ya calculado y versionado. Ver data/DATA.md para descargarlos.")
-}
-```
+Los votos por partido y nivel electoral (1958–2023) ya vienen calculados
+y versionados en `resultados/votos_totales_partido_nivel.csv` — es el
+resultado de cruzar por nombre `partidos.xlsx` con los ~130 archivos
+electorales crudos (candidato-municipio-elección, ~2.5GB, no incluidos
+en el repositorio). Ese cruce de texto (normalización de nombres,
+`script 08_Cruce_Votos_Electorales.R`) es un paso de limpieza de datos,
+no un resultado analítico en sí mismo, así que aquí simplemente se
+carga su salida ya calculada.
 
-```{r cruce-votos, eval=length(c(list.files("data", pattern="\\.tab$"), list.files("data", pattern="^[0-9]{4}_.*\\.dta$"))) > 0}
-FILLER <- c("PARTIDO", "MOVIMIENTO", "COLOMBIANO", "COLOMBIANA", "POLITICO", "POLITICA", "NACIONAL")
-normalizar <- function(x) {
-  x <- toupper(trimws(x))
-  x <- stri_trans_general(x, "Latin-ASCII")
-  x <- gsub("[^A-Z0-9 ]", " ", x)
-  palabras <- strsplit(x, "\\s+")
-  palabras <- lapply(palabras, function(w) w[!(w %in% FILLER) & w != ""])
-  vapply(palabras, function(w) paste(w, collapse = " "), character(1))
-}
-
-partidos$nombre_norm <- normalizar(partidos$nombre)
-no_coalicion <- !grepl("^COALICION", toupper(trimws(partidos$nombre)))
-dic <- unique(partidos[no_coalicion & partidos$nombre_norm != "", c("nombre", "nombre_norm")])
-dic <- dic[!duplicated(dic$nombre_norm), ]
-
-leer_agg <- function(path) {
-  ext <- tools::file_ext(path)
-  if (ext == "tab") {
-    dt <- tryCatch(
-      fread(path, select = c("ano", "tipo_eleccion", "codigo_partido", "votos"), quote = "\"", encoding = "UTF-8",
-            colClasses = list(character = c("ano", "tipo_eleccion", "codigo_partido"), numeric = "votos")),
-      error = function(e) NULL)
-  } else {
-    d <- haven::read_dta(path) |> clean_names()
-    cols <- intersect(c("ano", "tipo_eleccion", "codigo_partido", "votos"), names(d))
-    d <- d[cols]
-    for (cn in c("tipo_eleccion", "codigo_partido")) {
-      if (cn %in% names(d)) d[[cn]] <- as.character(haven::as_factor(d[[cn]]))
-    }
-    if ("ano" %in% names(d)) d[["ano"]] <- as.character(d[["ano"]])
-    if ("votos" %in% names(d)) d[["votos"]] <- as.numeric(d[["votos"]])
-    dt <- as.data.table(d)
-  }
-  if (is.null(dt) || nrow(dt) == 0) return(NULL)
-  dt <- dt[!is.na(codigo_partido) & trimws(codigo_partido) != ""]
-  dt <- dt[!grepl("COALICION", codigo_partido, ignore.case = TRUE)]
-  if (nrow(dt) == 0) return(NULL)
-  dt[, votos := as.numeric(votos)]
-  dt[is.na(votos), votos := 0]
-  dt
-}
-
-resultados_electorales <- rbindlist(lapply(archivos_electorales, function(f) {
-  tryCatch(leer_agg(f), error = function(e) NULL)
-}), use.names = TRUE, fill = TRUE)
-
-resultados_electorales[, codigo_partido_norm := normalizar(codigo_partido)]
-setDT(dic)
-resultados_electorales <- merge(resultados_electorales, dic,
-                                 by.x = "codigo_partido_norm", by.y = "nombre_norm", all.x = TRUE)
-
-votos_totales_partido_nivel <- resultados_electorales[!is.na(nombre),
-  .(votos_totales = sum(votos), n_registros = .N), by = .(nombre, tipo_eleccion)]
-setorder(votos_totales_partido_nivel, nombre, -votos_totales)
-
-fwrite(votos_totales_partido_nivel, "resultados/votos_totales_partido_nivel.csv")
-```
+Si quieres reconstruir el cruce desde cero (por ejemplo para auditarlo
+con los archivos crudos), corre `Rscript scripts/08_Cruce_Votos_Electorales.R`
+por separado — ver [`data/DESCARGAR_DATOS_ELECTORALES.md`](data/DESCARGAR_DATOS_ELECTORALES.md)
+para dónde descargarlos. No hace falta para el resto de este notebook.
 
 ```{r cargar-votos-precalculado}
 votos <- fread("resultados/votos_totales_partido_nivel.csv")
