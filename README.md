@@ -1,4 +1,4 @@
-# Más allá de la ideología: tipologías empíricas de los partidos políticos colombianos (1848–2023)
+# Patrones de los partidos políticos colombianos (1848–2023) con K-Means
 
 Trabajo final del curso **Aprendizaje de Máquinas y Políticas Públicas**
 (Bogotá Summer School in Economics 2026, Pontificia Universidad Javeriana).
