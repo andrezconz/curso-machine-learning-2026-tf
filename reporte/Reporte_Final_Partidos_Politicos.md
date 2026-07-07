@@ -18,7 +18,7 @@ Repositorio: https://github.com/andrezconz/curso-machine-learning-2026-tf
 
 ## 1. Pregunta de investigación
 
-¿Qué grupos o patrones de partidos y movimientos políticos colombianos, pueden identificarse mediante técnicas de aprendizaje no supervisado entre 1848 y 2023?
+¿Qué patrones de partidos y movimientos políticos colombianos pueden identificarse mediante aprendizaje no supervisado para el período 1848–2023?
 
 ## 2. Motivación
 
