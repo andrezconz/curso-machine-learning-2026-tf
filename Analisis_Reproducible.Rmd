@@ -1,5 +1,5 @@
 ---
-title: "Más allá de la ideología: tipologías empíricas de los partidos políticos colombianos (1848–2023)"
+title: "Patrones de los partidos políticos colombianos (1848–2023) con K-Means"
 subtitle: "Código reproducible — genera todos los resultados del reporte"
 author: "Andrez Felipe Guerrero Torres"
 date: "2026-07-06"
@@ -265,7 +265,7 @@ por separado — ver [`data/DESCARGAR_DATOS_ELECTORALES.md`](data/DESCARGAR_DATO
 para dónde descargarlos. No hace falta para el resto de este notebook.
 
 ```{r cargar-votos-precalculado}
-votos <- fread("resultados/votos_totales_partido_nivel.csv")
+votos <- fread("data/votos_totales_partido_nivel.csv")
 nrow(votos)
 ```
 

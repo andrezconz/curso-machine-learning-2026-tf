@@ -1,0 +1,209 @@
+\documentclass[11pt,aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish,es-noindentfirst]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\definecolor{navy}{HTML}{1F4E5F}
+\definecolor{teal}{HTML}{2E6B7E}
+\definecolor{terra}{HTML}{C1440E}
+\definecolor{mutedgray}{HTML}{5C7278}
+\definecolor{ice}{HTML}{DCE9EC}
+
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{structure}{fg=navy}
+\setbeamercolor{title}{fg=white,bg=navy}
+\setbeamercolor{frametitle}{fg=white,bg=navy}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{block title}{fg=white,bg=teal}
+\setbeamercolor{block body}{fg=black,bg=ice}
+\setbeamercolor{itemize item}{fg=terra}
+\setbeamercolor{itemize subitem}{fg=teal}
+\setbeamertemplate{itemize item}[circle]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamercolor{footline}{fg=mutedgray}
+\setbeamerfont{footline}{size=\tiny}
+\setbeamertemplate{footline}{%
+  \hfill\raisebox{2pt}{\color{mutedgray}\scriptsize\insertframenumber\,/\,\inserttotalframenumber}\hspace{4mm}\vspace{2mm}
+}
+
+\newcommand{\code}[1]{\texttt{\footnotesize #1}}
+
+\title{\textbf{Más allá de la ideología}}
+\subtitle{Tipologías empíricas de los partidos y movimientos políticos colombianos (1848--2023)}
+\author{Andrez Felipe Guerrero Torres}
+\institute{Aprendizaje de Máquinas y Políticas Públicas \\ Bogotá Summer School in Economics 2026 --- Pontificia Universidad Javeriana}
+\date{}
+
+\begin{document}
+
+% ============================================================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% ------------------------------------------------------------
+\begin{frame}{Pregunta y motivación}
+\begin{center}
+\large\color{teal}\textquestiondown{}Qué grupos o patrones de partidos y movimientos políticos colombianos pueden identificarse mediante aprendizaje no supervisado (1848--2023)?
+\end{center}
+\vspace{0.4cm}
+\begin{itemize}
+  \item Cerca del \textbf{40\%} de los partidos no tiene ideología clasificable --- y esa ausencia no se concentra en los marginales.
+  \item La literatura (Panebianco 1988; Mainwaring \& Scully 1995; Jones \& Mainwaring 2003) ofrece dimensiones más robustas: \textbf{institucionalización} (sobrevivir en el tiempo) y \textbf{nacionalización} (competir en múltiples niveles).
+  \item Pizarro Leongómez (2006): el sistema colombiano, un ``gigante con pies de barro''.
+\end{itemize}
+\end{frame}
+
+% ============================================================
+% 01 -- DATOS
+% ------------------------------------------------------------
+\begin{frame}{01 \textbullet\ Los datos}
+\begin{block}{Fuentes}
+Cabra-Ruíz et al.\ (2023): 5.143 partidos/movimientos/coaliciones, 27 variables (1848--2023) \\
+Torres et al.\ (2023): resultados electorales históricos (1958--2023), CEDE Uniandes
+\end{block}
+\begin{itemize}
+  \item Códigos centinela (98/99) tratados como categorías, no imputados
+  \item Votos transformados con $\log(1+\text{votos})$; coaliciones excluidas $\rightarrow$ 2.155 partidos no-coalición
+  \item Dummies + estandarización para pesos iguales
+  \item La participación cae con el nivel: 55,3\% en alcaldías vs.\ 1,2\% en presidencia
+\end{itemize}
+\end{frame}
+
+% ============================================================
+% 02 -- METODOLOGIA
+% ------------------------------------------------------------
+\begin{frame}{02 \textbullet\ K-Means y sus hiperparámetros}
+\begin{columns}
+\column{0.55\textwidth}
+\begin{itemize}
+  \item \textbf{Escala:} 5.143 obs.\ --- jerárquico poco práctico, K-Means escala linealmente
+  \item \textbf{Datos dummy + euclidiana:} simple e interpretable
+  \item \textbf{Validez verificable:} codo / silhouette / Calinski-Harabasz, a diferencia de DBSCAN o mezclas gaussianas
+\end{itemize}
+\column{0.45\textwidth}
+\begin{center}
+\begin{tabular}{ll}
+$k$ (nivel 1) & 4 \\
+$k$ (nivel 2) & 3 \\
+\code{nstart} & 100 \\
+\code{iter.max} & 1000 \\
+Semilla & 20260706 \\
+\end{tabular}
+\end{center}
+\end{columns}
+\vspace{0.3cm}
+\begin{block}{Importante}
+Los nombres de los clusters son una interpretación teórica posterior, no una medición directa del algoritmo. PCA solo para visualización.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------
+\begin{frame}{Selección de $k$ y modelo final}
+\begin{columns}
+\column{0.5\textwidth}
+\includegraphics[width=\textwidth]{figuras/fig2_pca_clusters.png}
+\column{0.5\textwidth}
+\begin{itemize}
+  \item Calinski-Harabasz favorece $k=2$; silhouette crece casi monótonamente
+  \item Se eligió $k=4$: silhouette comparable a $k=2$--3 y partición interpretable
+  \item Explica 25,2\% de varianza; silhouette promedio 0,26
+  \item Cluster 1 (pequeño, clave): silhouette $-0,04$ --- interpretar con cautela
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------
+\begin{frame}{Validación estadística}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Univariada} ($\chi^2$ + V de Cramér, las 12 variables $p<0,001$):
+\begin{center}
+\small
+\begin{tabular}{lr}
+\code{part\_presidencia} & 0,821 \\
+\code{ideologia} & 0,615 \\
+\code{gradonac} & 0,542 \\
+\end{tabular}
+\end{center}
+\column{0.5\textwidth}
+\textbf{Multivariada} (árbol + Random Forest, exactitud 99,1\%/99,6\%):
+\end{columns}
+\vspace{0.3cm}
+\begin{block}{Hallazgo revelador}
+\code{part\_presidencia} es la variable más fuerte aislada (V=0,821) pero cae al 5\textsuperscript{o} lugar en Random Forest: su señal es redundante con \code{ideologia} y \code{grupo\_representativo} --- algo que la prueba univariada no detecta.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------
+\begin{frame}{Segundo nivel: votos reales y robustez de $k$}
+\begin{columns}
+\column{0.45\textwidth}
+\includegraphics[width=\textwidth]{figuras/fig4_nivel2_pca.png}
+\column{0.55\textwidth}
+\begin{itemize}
+  \item 2.155 partidos no-coalición, votos reales (1958--2023)
+  \item Institucionalizado (4,8\%): Liberal, Conservador, Cambio Radical, Polo, Verde
+  \item \textbf{Robustez:} $k=4$ replica casi intactos los clusters institucionalizado/nicho; Rand ajustado $=0,507$ entre $k=3$ y $k=4$
+  \item Longevidad (externa, no usada en el clustering): 13,3 años institucionalizado vs.\ 0,5--0,8 en los demás
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% ============================================================
+% 03 -- OTRAS METODOLOGIAS
+% ------------------------------------------------------------
+\begin{frame}{03 \textbullet\ Otras metodologías (chequeos de robustez)}
+\begin{block}{Kernel PCA + Spectral Clustering}
+Núcleo RBF, muestra de 2.000 partidos: acuerdo moderado con K-Means (Rand ajustado $=0,57$); no aísla el 1,8\% institucionalizado como grupo propio --- perfil sustantivo pero sensible al método.
+\end{block}
+\begin{block}{Naive Bayes sobre el nombre del partido}
+Exactitud 84,1\% vs.\ 85,7\% de la clase mayoritaria (baseline) --- resultado negativo: el nombre no predice de forma confiable la institucionalización.
+\end{block}
+\end{frame}
+
+% ============================================================
+% 04 -- CONCLUSIONES
+% ------------------------------------------------------------
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture,overlay]
+\fill[navy] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}
+\centering
+\vspace{0.9cm}
+{\color{white}\large 04 \textbullet\ Hallazgo central\par}
+\vspace{0.4cm}
+{\color{terra}\fontsize{46}{54}\selectfont\bfseries 1,8\%\par}
+\vspace{0.2cm}
+{\color{white}\normalsize 93 de 5.143 partidos institucionalizados y nacionalizados.\\ El 98,2\% restante opera de forma local o marginal.\\ El segundo nivel corrobora: 4,8\% institucionalizado.\par}
+\vspace{0.5cm}
+{\color{ice}\footnotesize Las reformas de 2003 y 2011 no lo frenaron: la probabilidad de institucionalizarse cayó de 14,4\% a 1,2\%.\par}
+\end{frame}
+
+% ------------------------------------------------------------
+\begin{frame}{Conclusiones de política pública}
+\begin{itemize}
+  \item \textbf{Personería jurídica:} exigir desempeño multinivel \textbf{sostenido}, no solo una elección puntual
+  \item \textbf{Financiación estatal:} indicadores de presencia multinivel, no solo volumen de votos
+  \item \textbf{Partidos programáticos:} la débil asociación institucionalización-ideología exige instrumentos específicos
+  \item \textbf{Monitoreo:} la tipología, aplicada periódicamente por Registraduría/CNE, para evaluar si las reformas consolidan o fragmentan el sistema
+\end{itemize}
+\vspace{0.3cm}
+\begin{block}{Advertencia}
+Instrumento analítico de apoyo, \textbf{no} un criterio automático para cancelar personerías jurídicas.
+\end{block}
+\vspace{0.3cm}
+\centering \textexclamdown{}Gracias! \hspace{0.3cm} \url{https://github.com/andrezconz/curso-machine-learning-2026-tf}
+\end{frame}
+
+\end{document}
